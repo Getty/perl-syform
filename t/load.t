@@ -1,8 +1,10 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use Test::LoadAllModules;
+use Test::More;
 
-BEGIN {
-#all_uses_ok( search_path => '' );
-}
+require_ok('SyForm');
+require_ok('SyForm::Field');
+require_ok('SyForm::Field::Label');
+
+done_testing;
