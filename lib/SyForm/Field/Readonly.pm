@@ -1,16 +1,15 @@
 package SyForm::Field::Readonly;
-# ABSTRACT: Readonly fields
+# ABSTRACT: TODO
+
+die "TODO";
 
 use Moose::Role;
-
-with qw(
-  SyForm::Field::Default
-);
+use namespace::autoclean;
 
 has readonly => (
   is => 'ro',
   isa => 'Bool',
-  default => sub { 1 },
+  required => 1,
 );
 
 1;

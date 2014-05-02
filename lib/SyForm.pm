@@ -4,6 +4,16 @@ package SyForm;
 use Moose::Role;
 use Tie::IxHash;
 use Carp qw( croak );
+use Moose::Util qw( apply_all_roles );
+use Moose::Util::TypeConstraints;
+
+role_type 'SyForm::Field';
+role_type 'SyForm::Values';
+role_type 'SyForm::Results';
+
+use SyForm::Exception::UnknownErrorOnCreate;
+use SyForm::Exception::UnknownErrorOnBuildFields;
+use namespace::autoclean;
 
 has fields => (
   isa => 'Tie::IxHash',
@@ -35,7 +45,6 @@ sub _build_field_roles_by_arg {Tie::IxHash->new(
   # visuals can be placed everywhere
   label => 'SyForm::Field::Label',
   html => 'SyForm::Field::HTML',
-  ###
 
   # Block readonly before verification
   readonly => 'SyForm::Field::Readonly',
@@ -47,30 +56,40 @@ sub _build_field_roles_by_arg {Tie::IxHash->new(
 
 )}
 
-has default_field_args => (
+has field_args => (
   isa => 'HashRef',
   is => 'ro',
-  predicate => 'has_default_field_args',
+  predicate => 'has_field_args',
 );
 
 sub _build_fields {
   my ( $self ) = @_;
   my $fields = Tie::IxHash->new;
-  my $fields_list = Tie::IxHash->new(@{$self->fields_list});
-  for my $name ($fields_list->Keys) {
-    my %field_args = %{$fields_list->FETCH($name)};
-    $fields->Push($name, $self->_create_field($name,
-      %field_args, $self->has_default_field_args
-        ? (%{$self->default_field_args}) : (),
-    ));
+
+  eval {
+    my $fields_list = Tie::IxHash->new(@{$self->fields_list});
+    for my $name ($fields_list->Keys) {
+      my %field_args = %{$fields_list->FETCH($name)};
+      $fields->Push($name, $self->_create_field($name,
+        %field_args, $self->has_field_args ? (%{$self->field_args}) : (),
+      ));
+    }
+  };
+
+  if ($@) {
+    my $error = $@;
+    SyForm::Exception::UnknownErrorOnBuildFields->throw($self,$error);
   }
+
   return $fields;
 }
 
 sub _create_field {
   my ( $self, $name, %field_args ) = @_;
-  my $class = delete $field_args{class} || $self->default_field_class;
+  my $class = delete $field_args{class} || $self->field_class;
   my $traits = delete $field_args{traits} || [];
+  # actually there should be a more decent management of the roles, with
+  # a meta layer which supplies function that are used by the plugins
   unshift @{$traits}, $self->field_process_role
     unless delete $field_args{no_process};
   for my $arg ($self->field_roles_by_arg->Keys) {
@@ -94,113 +113,94 @@ has field_process_role => (
 
 sub _build_field_process_role { 'SyForm::Field::Process' }
 
-has default_field_roles => (
+has field_roles => (
   isa => 'ArrayRef[Str]',
   is => 'ro',
-  predicate => 'has_default_field_roles',
+  lazy => 1,
+  default => sub {[]},
 );
 
-has default_field_class => (
+has field_class => (
   isa => 'Str',
   is => 'ro',
   lazy_build => 1,
 );
 
-sub _build_default_field_class {
+sub _build_field_class {
   my ( $self ) = @_;
-  return $self->_default_field_metaclass->name;
+  return $self->_field_metaclass->name;
 }
 
-has default_field_base_class => (
+has field_base_class => (
   isa => 'Str',
   is => 'ro',
   lazy_build => 1,
 );
+sub _build_field_base_class { 'Moose::Object' }
 
-sub _build_default_field_base_class { 'Moose::Object' }
-
-has _default_field_metaclass => (
+has _field_metaclass => (
   isa => 'Moose::Meta::Class',
   is => 'ro',
   lazy_build => 1,
 );
 
-sub _build__default_field_metaclass {
+sub _build__field_metaclass {
   my ( $self ) = @_;
   return Moose::Meta::Class->create_anon_class(
-    superclasses => [$self->default_field_base_class],
-    roles => [ 'SyForm::Field', 'MooseX::Traits',
-      $self->has_default_field_roles ? (@{$self->default_field_roles}) : (),
+    superclasses => [$self->field_base_class],
+    roles => [
+      'SyForm::Field', 'MooseX::Traits',
+      @{$self->field_roles},
     ],
-    cache => 1,
   )
 }
 
+sub add_role {
+  my ( $self, @roles ) = @_;
+  for my $role (@roles) {
+    unless ($self->does($role)) {
+      apply_all_roles($self, $role);
+      if ($role->can('BUILD')) {
+        $role->can('BUILD')->($self);
+      }
+    }
+  }
+}
+
 sub create {
+  my @create_args = @_;
   my ( $class, $field_list_arg, %args ) = @_;
-  my $ref = ref $class;
-  $class = $ref if $ref;
+  my $form;
 
-  my $form_roles = delete $args{roles} || [];
-  unshift @{$form_roles}, 'SyForm', 'MooseX::Traits';
-  my $form_class = delete $args{class};
+  eval {
+    my $ref = ref $class;
+    $class = $ref if $ref;
 
-  unless ($form_class) {
-    my $form_base_class = delete $args{form_base_class} || 'Moose::Object';
-    my $form_metaclass = Moose::Meta::Class->create_anon_class(
-      superclasses => [$form_base_class],
-      roles => $form_roles,
-      cache => 1,
+    my $process_role = delete $args{process_role} || 'SyForm::Process';
+    my $no_process = delete $args{no_process};
+    my $roles = delete $args{roles} || [];
+    unshift @{$roles}, $process_role unless $no_process;
+    unshift @{$roles}, $class, 'MooseX::Traits';
+    my $form_class = delete $args{class};
+
+    unless ($form_class) {
+      my $base_class = delete $args{base_class} || 'Moose::Object';
+      my $form_metaclass = Moose::Meta::Class->create_anon_class(
+        superclasses => [$base_class],
+        roles => $roles,
+        cache => 1,
+      );
+      $form_class = $form_metaclass->name;
+    }
+
+    $form = $form_class->new(
+      fields => $field_list_arg,
     );
-    $form_class = $form_metaclass->name;
-  }
+  };
 
-  my $traits = [];
+  SyForm::Exception::UnknownErrorOnCreate->throw([@create_args],$@) if ($@);
 
-  return $form_class->new_with_traits(
-    traits => $traits,
-    fields => $field_list_arg,
-  );
-}
-
-has processed => (
-  is => 'rw',
-  isa => 'HashRef',
-  predicate => 'is_processed',
-);
-
-sub process {
-  my ( $self, %args ) = @_;
-  $self->processed({ %args });
-  $self->reset_result;
-  my $ok = 1;
-  for my $field ($self->process_fields) {
-    $ok = 0 unless $field->process(%args);
-  }
-  return $ok;
-}
-
-sub results {
-  my ( $self ) = @_;
-  return unless $self->is_processed;
-  my %results;
-  for my $field ($self->process_fields) {
-    $results{$field->name} = $field->result
-      if $field->has_result;
-  }
-  return { %results };  
-}
-
-sub reset_result {
-  my ( $self ) = @_;
-  $_->reset_result for ($self->process_fields);
-}
-
-sub process_fields {
-  my ( $self ) = @_;
-  return grep {
-    $_->does($self->field_process_role)
-  } $self->fields->Values;
+  return $form;
 }
 
 1;
@@ -213,12 +213,12 @@ sub process_fields {
 
   my $form = SyForm->create([
     'name' => {
-      type => 'Str',
+      isa => 'Str',
       required => 1,
       label => 'Your name',
     },
     'age' => {
-      type => 'Int',
+      isa => 'Int',
       label => 'Your age',
     },
   ]);
@@ -228,8 +228,8 @@ sub process_fields {
   $form->field('name')->does('SyForm::Field::Label');
   $form->field('name')->does('SyForm::Field::Verify');
 
-  if ($form->process( name => 'YoCoolCopKiller', age => 'eight' )) {
-    my $hash_of_results = $form->results;
+  if (my $results = $form->process( name => 'YoCoolCopKiller', age => 13 )) {
+    my $vars = $results->as_hashref;
   }
 
 =head1 DESCRIPTION

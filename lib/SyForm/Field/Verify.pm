@@ -2,7 +2,6 @@ package SyForm::Field::Verify;
 # ABSTRACT: Required field
 
 use Moose::Role;
-use Moose::Util qw( apply_all_roles );
 use namespace::autoclean;
 
 has required => (
@@ -23,9 +22,15 @@ has verify_filters => (
   predicate => 'has_verify_filters',
 );
 
+has no_delete_on_invalid_result => (
+  is => 'ro',
+  isa => 'Bool',
+  default => sub { 0 },
+);
+
 sub BUILD {
   my ( $self ) = @_;
-  apply_all_roles( $self->syform, 'SyForm::Verify' ) unless $self->syform->does('SyForm::Verify');
+  $self->syform->add_role('SyForm::Verify');
 }
 
 1;

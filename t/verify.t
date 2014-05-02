@@ -18,17 +18,24 @@ my $form = SyForm->create([
   },
 ]);
 
-ok($form->process( require => 'something', reqint => 2 ),'process with field is true');
-is($form->field('require')->result,'something','result is field with value');
-ok(!$form->field('integer')->has_result,'integer field has no result');
-is($form->field('reqint')->result,'2','result is field with value');
-ok(!$form->process(),'process without required fields is false');
-ok(!$form->field('require')->has_result,'require field has no result');
-ok(!$form->field('integer')->has_result,'integer field has no result');
-ok(!$form->field('reqint')->has_result,'reqint field has no result');
-ok(!$form->process( require => 'something', integer => "text", reqint => 2 ),'process with string instead of integer is false');
-is($form->field('require')->result,'something','result is field with value');
-ok(!$form->field('integer')->has_result,'integer field has no result');
-is($form->field('reqint')->result,'2','result is field with value');
+ok($form->does('SyForm'),'$form does SyForm');
+my $results = $form->process( require => 'something', reqint => 2 );
+ok($results->does('SyForm::Results'),'$results does SyForm::Results');
+ok($results->does('SyForm::Results::Success'),'$results does SyForm::Results::Success');
+ok($results->does('SyForm::Results::Verify'),'$results does SyForm::Results::Verify');
+ok($results->success,'$results is a success');
+is($results->require,'something','result is field with value');
+ok(!$results->has_integer,'integer field has no result');
+is($results->reqint,'2','result is field with value');
+my $emptyresults = $form->process();
+ok(!$emptyresults->success,'$emptyresults is no success');
+ok(!$emptyresults->has_require,'require field has no result');
+ok(!$emptyresults->has_integer,'integer field has no result');
+ok(!$emptyresults->has_reqint,'reqint field has no result');
+my $badresults = $form->process( require => 'something', integer => "text", reqint => 2 );
+ok(!$badresults->success,'$badresults is no success');
+is($badresults->require,'something','result is field with value');
+ok(!$badresults->has_integer,'integer field has no result');
+is($badresults->reqint,'2','result is field with value');
 
 done_testing;

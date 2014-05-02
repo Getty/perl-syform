@@ -13,13 +13,22 @@ ok($form->does('SyForm'),'$form does SyForm');
 my $n = 0;
 for my $name ($form->fields->Keys) {
   $n++;
-  my $field = $form->fields->Values($name);
+  my $field = $form->field($name);
   ok(!$field->does('SyForm::Field::Label'),'label role not loaded on field');
   ok($field->does('SyForm::Field::Process'),'process role loaded on field');
 }
 is($n,1,'one field');
-ok($form->process( test => 12, ignored => 2 ),'Form successful processed');
-is_deeply($form->results,{ test => 12 },'Result is fine');
+my $emptyresult = $form->process();
+ok($emptyresult->does('SyForm::Results'),'Result is SyForm::Results');
+ok(!$emptyresult->has_test,'Result has no value for test');
+is_deeply($emptyresult->as_hashref,{},'Result hash is empty');
+my $result = $form->process( test => 12, ignored => 2 );
+ok($result->does('SyForm::Results'),'Result is SyForm::Results');
+is($result->test,12,'Result of test is fine');
+is_deeply($result->as_hashref,{ test => 12 },'Result as hash is fine');
+# TODO
+# my %result_hash = %{$result};
+# is_deeply({ %result_hash },{ test => 12 },'Result as hash is fine');
 
 my $form2 = SyForm->create([
   'test' => {},
@@ -47,5 +56,10 @@ ok(!$test3_field->does('SyForm::Field::Process'),'process role loaded on 3rd fie
 my $test4_field = $form2->field('test4');
 ok(!$test4_field->does('SyForm::Field::Label'),'label role not loaded on 4rd field');
 ok(!$test4_field->does('SyForm::Field::Process'),'process role loaded on 4rd field');
+my $result2 = $form2->process( test2 => 'lalala' );
+ok($result2->has_test2,'Has a test2 result value');
+is($result2->test2,'lalala','Has a test2 result value');
+ok(!$result2->has_test,'Has no test result value');
+ok($result2->does('SyForm::Results'),'Result is SyForm::Results');
 
 done_testing;

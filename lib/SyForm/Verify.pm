@@ -3,6 +3,7 @@ package SyForm::Verify;
 
 use Moose::Role;
 use Data::Verifier;
+use namespace::autoclean;
 
 has verify_filters => (
   is => 'ro',
@@ -10,45 +11,55 @@ has verify_filters => (
   predicate => 'has_verify_filters',
 );
 
-has verify_result => (
-  is => 'rw',
-  predicate => 'has_verify_result',
-  clearer => 'reset_verify_result',
-);
-
-after reset_result => sub {
-  my ( $self ) = @_;
-  $self->reset_verify_result;
+around results_roles => sub {
+  my ( $orig, $self ) = @_;
+  my @result_roles = @{$self->$orig()};
+  for my $new_role (qw( SyForm::Results::Success SyForm::Results::Verify )) {
+    my $found = 0;
+    for my $role (@result_roles) {
+      $found = 1 if $role eq $new_role;
+    }
+    push @result_roles, $new_role unless $found;
+  }
+  return [ @result_roles ];
 };
 
-around process => sub {
-  my ( $orig, $self, %args ) = @_;
-  my $no_verify = delete $args{no_verify};
-  my $ok = $self->$orig(%args);
-  unless ($no_verify) {
-    my %profile;
-    for my $field ($self->process_fields) {
-      my $name = $field->name;
-      my %args;
-      $args{required} = $field->required if $field->has_required;
-      $args{type} = $field->type if $field->has_type;
-      $args{filters} = $field->verify_filters if $field->has_verify_filters;
-      if (%args) {
-        $profile{$name} = { %args };
+around create_results => sub {
+  my ( $orig, $self, $values, %args ) = @_;
+  my $no_success = exists $args{success} && !$args{success} ? 1 : 0;
+  my $verify_results = $self->verify_values($values);
+  unless ($verify_results->success) {
+    for my $field (@{$self->process_fields}) {
+      if ($verify_results->is_invalid($field->name)) {
+        unless ($field->no_delete_on_invalid_result) {
+          delete $args{$field->name} if exists $args{$field->name};
+        }
       }
     }
-    my $dv = Data::Verifier->new(
-      $self->has_verify_filters ? ( filters => $self->verify_filters ) : (),
-      profile => { %profile }
-    );
-    $self->verify_result($dv->verify({ %args }));
-    for my $field ($self->process_fields) {
-      $field->reset_result if $self->verify_result->is_invalid($field->name);
-    }
-    return 1 if $self->verify_result->success and $ok;
-    return 0 unless $self->verify_result->success;
   }
-  return $ok;
+  $args{success} = $no_success ? 0 : $verify_results->success ? 1 : 0; 
+  $args{verify_results} = $verify_results;
+  return $self->$orig($values,%args);
+};
+
+sub verify_values {
+  my ( $self, $values ) = @_;
+  my %profile;
+  for my $field (@{$self->process_fields}) {
+    my $name = $field->name;
+    my %args;
+    $args{required} = $field->required if $field->has_required;
+    $args{type} = $field->type if $field->type;
+    $args{filters} = $field->verify_filters if $field->has_verify_filters;
+    if (%args) {
+      $profile{$name} = { %args };
+    }
+  }
+  my $dv = Data::Verifier->new(
+    $self->has_verify_filters ? ( filters => $self->verify_filters ) : (),
+    profile => { %profile }
+  );
+  return $dv->verify($values->as_hashref);
 };
 
 1;
