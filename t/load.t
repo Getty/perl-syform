@@ -3,28 +3,34 @@ use strict;
 use warnings;
 use Test::More;
 
-use_ok('SyForm');
-use_ok('SyForm::Exception::Role::WithSyForm');
-use_ok('SyForm::Exception::Role::WithSyFormField');
-use_ok('SyForm::Exception::UnexpectedCallToGetValueByArgs');
-use_ok('SyForm::Exception::UnknownErrorOnBuildFields');
-use_ok('SyForm::Exception::UnknownErrorOnCreate');
-use_ok('SyForm::Exception::UnknownErrorOnProcess');
-use_ok('SyForm::Field');
-use_ok('SyForm::Field::Default');
-use_ok('SyForm::Field::HTML');
-use_ok('SyForm::Field::Label');
-use_ok('SyForm::Field::Process');
-#use_ok('SyForm::Field::Readonly
-use_ok('SyForm::Fields');
-use_ok('SyForm::Field::Verify');
-use_ok('SyForm::Meta::Attribute::Field');
-use_ok('SyForm::Process');
-use_ok('SyForm::Results');
-use_ok('SyForm::Results::Success');
-use_ok('SyForm::Results::Verify');
-use_ok('SyForm::Values');
-use_ok('SyForm::Verify');
-
+for (qw(
+  SyForm
+  SyForm::Exception
+  SyForm::Exception::Role::WithOriginalError
+  SyForm::Exception::Role::WithSyForm
+  SyForm::Exception::Role::WithSyFormField
+  SyForm::Exception::UnexpectedCallToGetValueByArgs
+  SyForm::Exception::UnknownErrorOnBuildField
+  SyForm::Exception::UnknownErrorOnBuildFields
+  SyForm::Exception::UnknownErrorOnCreate
+  SyForm::Exception::UnknownErrorOnProcess
+  SyForm::Exception::ValidationFailedForTypeConstraint
+  SyForm::Field
+  SyForm::Field::Default
+  SyForm::Field::HTML
+  SyForm::Field::Label
+  SyForm::Field::Process
+  SyForm::Fields
+  SyForm::Field::Verify
+  SyForm::Meta::Attribute::Field
+  SyForm::Process
+  SyForm::Results
+  SyForm::Results::Success
+  SyForm::Results::Verify
+  SyForm::Values
+  SyForm::Verify
+)) {
+  use_ok($_);
+}
 
 done_testing;

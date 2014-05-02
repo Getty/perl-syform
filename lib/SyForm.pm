@@ -144,7 +144,8 @@ has _field_metaclass => (
 
 sub _build__field_metaclass {
   my ( $self ) = @_;
-  return Moose::Meta::Class->create_anon_class(
+  return Moose::Meta::Class->create(
+    (ref $self).'::Field',
     superclasses => [$self->field_base_class],
     roles => [
       'SyForm::Field', 'MooseX::Traits',
@@ -168,47 +169,49 @@ sub add_role {
   for my $role (@roles) {
     unless ($self->does($role)) {
       apply_all_roles($self, $role);
-      if ($role->can('BUILD')) {
-        $role->can('BUILD')->($self);
-      }
+      $role->can('BUILD')->($self) if $role->can('BUILD');
     }
   }
 }
 
-sub create {
-  my @create_args = @_;
-  my ( $class, $field_list_arg, %args ) = @_;
-  my $form;
+{
+  my $CLASS_SERIAL = 0;
+  sub create {
+    my @create_args = @_;
+    my ( $class, $field_list_arg, %args ) = @_;
+    my $form;
 
-  eval {
-    my $ref = ref $class;
-    $class = $ref if $ref;
+    eval {
+      my $ref = ref $class;
+      $class = $ref if $ref;
 
-    my $process_role = delete $args{process_role} || 'SyForm::Process';
-    my $no_process = delete $args{no_process};
-    my $roles = delete $args{roles} || [];
-    unshift @{$roles}, $process_role unless $no_process;
-    unshift @{$roles}, $class, 'MooseX::Traits';
-    my $form_class = delete $args{class};
+      my $process_role = delete $args{process_role} || 'SyForm::Process';
+      my $no_process = delete $args{no_process};
+      my $roles = delete $args{roles} || [];
+      unshift @{$roles}, $process_role unless $no_process;
+      unshift @{$roles}, $class, 'MooseX::Traits';
+      my $form_class = delete $args{class};
 
-    unless ($form_class) {
-      my $base_class = delete $args{base_class} || 'Moose::Object';
-      my $form_metaclass = Moose::Meta::Class->create_anon_class(
-        superclasses => [$base_class],
-        roles => $roles,
-        cache => 1,
+      unless ($form_class) {
+        my $base_class = delete $args{base_class} || 'Moose::Object';
+        my $form_metaclass = Moose::Meta::Class->create(
+          $class.'::__GENERATED__::'.$CLASS_SERIAL++,
+          superclasses => [$base_class],
+          roles => $roles,
+          cache => 1,
+        );
+        $form_class = $form_metaclass->name;
+      }
+
+      $form = $form_class->new(
+        fields => $field_list_arg,
       );
-      $form_class = $form_metaclass->name;
-    }
+    };
 
-    $form = $form_class->new(
-      fields => $field_list_arg,
-    );
-  };
+    SyForm->throw( UnknownErrorOnCreate => [@create_args], $@ ) if ($@);
 
-  SyForm->throw( UnknownErrorOnCreate => [@create_args], $@ ) if ($@);
-
-  return $form;
+    return $form;
+  }
 }
 
 1;

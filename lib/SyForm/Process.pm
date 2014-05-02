@@ -85,7 +85,8 @@ has _values_metaclass => (
 
 sub _build__values_metaclass {
   my ( $self ) = @_;
-  return Moose::Meta::Class->create_anon_class(
+  return Moose::Meta::Class->create(
+    (ref $self).'::Values',
     superclasses => [$self->values_base_class],
     roles => [
       'SyForm::Values', 'MooseX::Traits',
@@ -146,7 +147,8 @@ has _results_metaclass => (
 
 sub _build__results_metaclass {
   my ( $self ) = @_;
-  return Moose::Meta::Class->create_anon_class(
+  return Moose::Meta::Class->create(
+    (ref $self).'::Results',
     superclasses => [$self->results_base_class],
     roles => [
       'SyForm::Results', 'MooseX::Traits',
