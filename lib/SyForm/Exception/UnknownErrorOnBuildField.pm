@@ -25,7 +25,7 @@ sub throw_with_args {
   SyForm->throw( ValidationFailedForTypeConstraint =>
     $field_name, $field_args, $error
   ) if $error->isa('Moose::Exception::ValidationFailedForTypeConstraint');
-  $class->throw('Unknown error on building up of field ('.$field_name.')',
+  $class->throw($class->error_message_text($error).' on building up of field ('.$field_name.')',
     field_args => $field_args,
     field_name => $field_name,
     original_error => $error,

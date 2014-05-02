@@ -25,7 +25,7 @@ sub throw_with_args {
   my ( $class, $field_name, $field_args, $moose_exception ) = @_;
   my $message = $moose_exception->is_attribute_set
     ? 'On field ('.$field_name.') the '.lcfirst($moose_exception->message)
-    : 'Error at field ('.$field_name.'): '.$moose_exception->message;
+    : 'Moose exception at field ('.$field_name.'): '.$moose_exception->message;
   $class->throw($message,
     field_args => $field_args,
     field_name => $field_name,
