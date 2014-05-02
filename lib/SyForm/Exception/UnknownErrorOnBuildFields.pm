@@ -6,6 +6,7 @@ use namespace::autoclean;
 
 with qw(
   SyForm::Exception::Role::WithSyForm
+  SyForm::Exception::Role::WithOriginalError
 );
 
 around throw => sub {
@@ -14,6 +15,7 @@ around throw => sub {
     message => '[ERROR] Unknown error on building up of fields'."\n\n".
       ' Original error message:'."\n\n".$error,
     syform => $syform,
+    original_error => $error,
   });
 };
 

@@ -190,6 +190,7 @@ sub _build_process_fields {
 }
 
 sub process {
+  my @process_args = @_;
   my ( $self, %args ) = @_;
   my $results;
 
@@ -210,7 +211,7 @@ sub process {
     $results = $self->create_results($values, %results_args);
   };
 
-  SyForm::Exception::UnknownErrorOnProcess->throw($self,$@) if ($@);
+  SyForm::Exception::UnknownErrorOnProcess->throw($self,[@process_args],$@) if ($@);
 
   return $results;
 }
