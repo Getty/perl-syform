@@ -6,13 +6,13 @@ use Tie::IxHash;
 use Carp qw( croak );
 use Moose::Util qw( apply_all_roles );
 use Moose::Util::TypeConstraints;
+use Module::Runtime qw( use_module );
 
 role_type 'SyForm::Field';
 role_type 'SyForm::Values';
 role_type 'SyForm::Results';
 
 use SyForm::Exception;
-use Module::Runtime qw( use_module );
 use namespace::autoclean;
 
 has fields => (
@@ -37,24 +37,34 @@ has field_roles_by_arg => (
 );
 
 # order is relevant
-sub _build_field_roles_by_arg {Tie::IxHash->new(
+sub _build_field_roles_by_arg {
+  my ( $self ) = @_;
 
-  # first fill up missing args with defaults
-  default => 'SyForm::Field::Default',
+  return Tie::IxHash->new(
 
-  # visuals can be placed everywhere
-  label => 'SyForm::Field::Label',
-  html => 'SyForm::Field::HTML',
+    default => 'SyForm::Field::Default',
 
-  # Block readonly before verification
-  readonly => 'SyForm::Field::Readonly',
+    label => 'SyForm::Field::Label',
+    html => 'SyForm::Field::HTML',
 
-  # Verify last
-  (map { $_ => 'SyForm::Field::Verify' } qw(
-    required type filters
-  )),
+    readonly => 'SyForm::Field::Readonly',
 
-)}
+    (map { $_ => 'SyForm::Field::Verify' } qw(
+      required type filters
+    )),
+
+    @{$self->custom_roles_by_arg},
+
+  );
+
+}
+
+has custom_roles_by_arg => (
+  isa => 'ArrayRef[Str]',
+  is => 'ro',
+  lazy => 1,
+  default => sub {[]},
+);
 
 has field_args => (
   isa => 'HashRef',
@@ -176,35 +186,65 @@ sub add_role {
 
 {
   my $CLASS_SERIAL = 0;
+  my %default_form_roles_by_arg = (
+    label => 'SyForm::Label',
+  );
   sub create {
     my @create_args = @_;
-    my ( $class, $field_list_arg, %args ) = @_;
-    my $form;
+    my ( $class, @all_args ) = @_;
+    my ( @roles, @field_list_args, %args );
+    while (@all_args) {
+      my $next_arg = shift @all_args;
+      if (ref $next_arg eq 'ARRAY') {
+        @field_list_args = @{$next_arg};
+        %args = @all_args;
+        last;
+      } elsif (!ref $next_arg) {
+        push @roles, 'SyForm::'.$next_arg;
+      } else {
+        my $ref = ref $next_arg;
+        SyForm->throw( UnexpectedArgToCreate => [@create_args], $ref );
+      }
+    }
 
+    my $form;
     eval {
       my $ref = ref $class;
       $class = $ref if $ref;
-
+      my %form_roles_by_arg = defined $args{default_form_roles_by_arg}
+        ? (%{delete $args{default_form_roles_by_arg}})
+        : (%default_form_roles_by_arg);
+      if (defined $args{form_roles_by_arg}) {
+        my %custom_form_roles_by_arg = delete $args{form_roles_by_arg};
+        for my $arg (keys %custom_form_roles_by_arg) {
+          $form_roles_by_arg{$arg} = $custom_form_roles_by_arg{$arg};
+        }
+      }
       my $process_role = delete $args{process_role} || 'SyForm::Process';
       my $no_process = delete $args{no_process};
       my $roles = delete $args{roles} || [];
       unshift @{$roles}, $process_role unless $no_process;
       unshift @{$roles}, $class, 'MooseX::Traits';
+      for my $arg (keys %form_roles_by_arg) {
+        if (defined $args{$arg}) {
+          push @{$roles}, $form_roles_by_arg{$arg};
+        }
+      }
       my $form_class = delete $args{class};
+      my $class_name = delete $args{class_name};
 
       unless ($form_class) {
         my $base_class = delete $args{base_class} || 'Moose::Object';
         my $form_metaclass = Moose::Meta::Class->create(
-          $class.'::__GENERATED__::'.$CLASS_SERIAL++,
+          $class_name ? $class_name : $class.'::__GENERATED__::'.$CLASS_SERIAL++,
           superclasses => [$base_class],
           roles => $roles,
-          cache => 1,
         );
         $form_class = $form_metaclass->name;
       }
 
       $form = $form_class->new(
-        fields => $field_list_arg,
+        fields => [ @field_list_args ],
       );
     };
 

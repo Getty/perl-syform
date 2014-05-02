@@ -5,12 +5,7 @@ extends 'SyForm::Exception';
 
 with qw(
   SyForm::Exception::Role::WithOriginalError
-);
-
-has create_args => (
-  is => 'ro',
-  isa => 'ArrayRef',
-  required => 1,
+  SyForm::Exception::Role::WithCreateArgs
 );
 
 sub throw_with_args {

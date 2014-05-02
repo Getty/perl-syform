@@ -171,6 +171,13 @@ sub _build_results_class {
   return $self->_results_metaclass->name;
 }
 
+has results_as_hashref => (
+  isa => 'Bool',
+  is => 'ro',
+  lazy => 1,
+  default => sub { 0 },
+);
+
 ##########
 #
 # Process
@@ -225,6 +232,7 @@ sub create_values {
 
 sub create_results {
   my ( $self, $values, %args ) = @_;
+  return { %args } if $self->results_as_hashref;
   return $self->results_class->new({
     values => $values,
     field_names => [map { $_->name } @{$self->process_fields}],
