@@ -6,6 +6,7 @@ use Moose::Role;
 has syform => (
   is => 'ro',
   isa => 'SyForm',
+  weak_ref => 1,
   required => 1,
 );
 

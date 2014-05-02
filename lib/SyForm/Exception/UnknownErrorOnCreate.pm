@@ -1,8 +1,7 @@
 package SyForm::Exception::UnknownErrorOnCreate;
 
 use Moose;
-extends 'Throwable::Error';
-use namespace::autoclean;
+extends 'SyForm::Exception';
 
 with qw(
   SyForm::Exception::Role::WithOriginalError
@@ -14,14 +13,13 @@ has create_args => (
   required => 1,
 );
 
-around throw => sub {
-  my ( $orig, $self, $create_args, $error ) = @_;
-  $self->$orig({
-    message => '[ERROR] Unknown error on create of SyForm'."\n\n".
-      ' Original error message:'."\n\n".$error,
+sub throw_with_args {
+  my ( $class, $create_args, $error ) = @_;
+  $class->rethrow_syform_exception($error);
+  $class->throw('Unknown error on create',
     create_args => $create_args,
     original_error => $error,
-  });
-};
+  );
+}
 
 1;

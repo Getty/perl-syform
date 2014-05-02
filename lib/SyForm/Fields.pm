@@ -6,14 +6,17 @@ use namespace::autoclean;
 sub as_hashref {
   my ( $self ) = @_;
   my %hashref;
-  for my $meta_attribute ($self->meta->get_all_attributes) {
-    if ($meta_attribute->does('SyForm::Meta::Attribute::Field')) {
-      my $name = $meta_attribute->name;
-      my $has = 'has_'.$name;
-      $hashref{$name} = $self->$name if $self->$has;
-    }
+  for my $name (@{$self->field_names}) {
+    my $has = 'has_'.$name;
+    $hashref{$name} = $self->$name if $self->$has;
   }
   return { %hashref };
 }
+
+has field_names => (
+  is => 'ro',
+  isa => 'ArrayRef[Str]',
+  required => 1,
+);
 
 1;

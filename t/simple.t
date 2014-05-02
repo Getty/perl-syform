@@ -61,5 +61,23 @@ ok($result2->has_test2,'Has a test2 result value');
 is($result2->test2,'lalala','Has a test2 result value');
 ok(!$result2->has_test,'Has no test result value');
 ok($result2->does('SyForm::Results'),'Result is SyForm::Results');
+is_deeply($result2->field_names,[qw(
+  test test2
+)],'Field names are in correct order');
+
+my $result3 = SyForm->create([
+  'test' => {},
+  'test2' => {
+    label => 'Test Label',
+  },
+  'test3' => {},
+  'test4' => {
+    no_process => 1,
+  },
+  'test5' => {},
+])->process();
+is_deeply($result3->field_names,[qw(
+  test test2 test3 test5
+)],'Other field names are also in correct order');
 
 done_testing;

@@ -11,8 +11,8 @@ role_type 'SyForm::Field';
 role_type 'SyForm::Values';
 role_type 'SyForm::Results';
 
-use SyForm::Exception::UnknownErrorOnCreate;
-use SyForm::Exception::UnknownErrorOnBuildFields;
+use SyForm::Exception;
+use Module::Runtime qw( use_module );
 use namespace::autoclean;
 
 has fields => (
@@ -65,27 +65,25 @@ has field_args => (
 sub _build_fields {
   my ( $self ) = @_;
   my $fields = Tie::IxHash->new;
-
   eval {
     my $fields_list = Tie::IxHash->new(@{$self->fields_list});
     for my $name ($fields_list->Keys) {
       my %field_args = %{$fields_list->FETCH($name)};
-      $fields->Push($name, $self->_create_field($name,
-        %field_args, $self->has_field_args ? (%{$self->field_args}) : (),
-      ));
+      eval {
+        $fields->Push($name, $self->_create_field($name,
+          %field_args, $self->has_field_args ? (%{$self->field_args}) : (),
+        ));
+      };
+      SyForm->throw( UnknownErrorOnBuildField => $name, { %field_args }, $@ ) if $@;
     }
   };
-
-  if ($@) {
-    my $error = $@;
-    SyForm::Exception::UnknownErrorOnBuildFields->throw($self,$error);
-  }
-
+  SyForm->throw( UnknownErrorOnBuildFields => $self, $@ ) if $@;
   return $fields;
 }
 
 sub _create_field {
   my ( $self, $name, %field_args ) = @_;
+  my $field;
   my $class = delete $field_args{class} || $self->field_class;
   my $traits = delete $field_args{traits} || [];
   # actually there should be a more decent management of the roles, with
@@ -97,7 +95,7 @@ sub _create_field {
       push @{$traits}, $self->field_roles_by_arg->FETCH($arg);
     }
   }
-  $class->new_with_traits(
+  return $class->new_with_traits(
     syform => $self,
     traits => $traits,
     name => $name,
@@ -155,6 +153,16 @@ sub _build__field_metaclass {
   )
 }
 
+sub throw {
+  my ( $class, $exception, @args ) = @_;
+  if (scalar @args == 0) {
+    SyForm::Exception->throw($exception);
+  }
+  my $exception_class = 'SyForm::Exception::'.$exception;
+  use_module($exception_class);
+  $exception_class->throw_with_args(@args);
+}
+
 sub add_role {
   my ( $self, @roles ) = @_;
   for my $role (@roles) {
@@ -198,7 +206,7 @@ sub create {
     );
   };
 
-  SyForm::Exception::UnknownErrorOnCreate->throw([@create_args],$@) if ($@);
+  SyForm->throw( UnknownErrorOnCreate => [@create_args], $@ ) if ($@);
 
   return $form;
 }

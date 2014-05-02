@@ -2,6 +2,7 @@ package SyForm::Field::Label;
 # ABSTRACT: A label for a field
 
 use Moose::Role;
+use namespace::autoclean;
 
 has label => (
   is => 'ro',

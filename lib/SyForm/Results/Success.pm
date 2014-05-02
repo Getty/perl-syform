@@ -2,6 +2,7 @@ package SyForm::Results::Success;
 # ABSTRACT: Trait for SyForm fields of SyForm::Results and SyForm::Values attributes
 
 use Moose::Role;
+use namespace::autoclean;
 
 # TODO
 # use MooseX::Role::WithOverloading;

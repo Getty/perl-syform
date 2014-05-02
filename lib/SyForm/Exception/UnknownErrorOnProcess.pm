@@ -1,8 +1,7 @@
 package SyForm::Exception::UnknownErrorOnProcess;
 
 use Moose;
-extends 'Throwable::Error';
-use namespace::autoclean;
+extends 'SyForm::Exception';
 
 with qw(
   SyForm::Exception::Role::WithSyForm
@@ -15,15 +14,14 @@ has process_args => (
   required => 1,
 );
 
-around throw => sub {
-  my ( $orig, $self, $syform, $process_args, $error ) = @_;
-  $self->$orig({
-    message => '[ERROR] Unknown error on process of SyForm'."\n\n".
-      ' Original error message:'."\n\n".$error,
+sub throw_with_args {
+  my ( $class, $syform, $process_args, $error ) = @_;
+  $class->rethrow_syform_exception($error);
+  $class->throw('Unknown error on process',
     syform => $syform,
     original_error => $error,
     process_args => $process_args,
-  });
+  );
 };
 
 1;

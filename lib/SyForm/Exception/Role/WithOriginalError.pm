@@ -7,4 +7,15 @@ has original_error => (
   required => 1,
 );
 
+sub rethrow_syform_exception {
+  my ( $class, $error ) = @_;
+  die $error if $error->isa('SyForm::Exception');
+}
+
+around throw => sub {
+  my ( $orig, $class, $message, %args ) = @_;
+  $message .= "\n".'[Original Error] '.$args{original_error};
+  return $class->$orig($message, %args);
+};
+
 1;

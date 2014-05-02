@@ -2,7 +2,6 @@ package SyForm::Field::Process;
 # ABSTRACT: Role for processed fields
 
 use Moose::Role;
-use SyForm::Exception::UnexpectedCallToGetValueByArgs;
 use namespace::autoclean;
 
 sub has_value_by_args {
@@ -12,7 +11,7 @@ sub has_value_by_args {
 
 sub get_value_by_args {
   my ( $self, %args ) = @_;
-  SyForm::Exception::UnexpectedCallToGetValueByArgs->throw($self)
+  SyForm->throw( UnexpectedCallToGetValueByArgs => $self )
     unless $self->has_value_by_args(%args);
   return $self->get_value_by_arg($args{$self->name});
 }

@@ -4,7 +4,6 @@ package SyForm::Process;
 use Moose::Role;
 use Moose::Meta::Class;
 use Moose::Meta::Attribute;
-use SyForm::Exception::UnknownErrorOnProcess;
 use namespace::autoclean;
 
 #################
@@ -193,7 +192,6 @@ sub process {
   my @process_args = @_;
   my ( $self, %args ) = @_;
   my $results;
-
   eval {
     my %values_args;
     for my $field (@{$self->process_fields}) {
@@ -210,23 +208,25 @@ sub process {
     }
     $results = $self->create_results($values, %results_args);
   };
-
-  SyForm::Exception::UnknownErrorOnProcess->throw($self,[@process_args],$@) if ($@);
-
+  SyForm->throw( UnknownErrorOnProcess => $self,[@process_args], $@ ) if $@;
   return $results;
 }
 
 sub create_values {
   my ( $self, %args ) = @_;
   return $self->values_class->new({
-    syform => $self, %args
+    syform => $self,
+    field_names => [map { $_->name } @{$self->process_fields}],
+    %args
   });
 }
 
 sub create_results {
   my ( $self, $values, %args ) = @_;
   return $self->results_class->new({
-    values => $values, %args
+    values => $values,
+    field_names => [map { $_->name } @{$self->process_fields}],
+    %args
   });
 }
 
