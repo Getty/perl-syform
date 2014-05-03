@@ -11,19 +11,6 @@ has verify_filters => (
   predicate => 'has_verify_filters',
 );
 
-around results_roles => sub {
-  my ( $orig, $self ) = @_;
-  my @result_roles = @{$self->$orig()};
-  for my $new_role (qw( SyForm::Results::Success SyForm::Results::Verify )) {
-    my $found = 0;
-    for my $role (@result_roles) {
-      $found = 1 if $role eq $new_role;
-    }
-    push @result_roles, $new_role unless $found;
-  }
-  return [ @result_roles ];
-};
-
 around create_results => sub {
   my ( $orig, $self, $values, %args ) = @_;
   my $no_success = exists $args{success} && !$args{success} ? 1 : 0;

@@ -1,5 +1,6 @@
 
 requires 'Data::Verifier', '0';
+requires 'List::MoreUtils', '0';
 requires 'Moose', '2.1204';
 # TODO
 # requires 'MooseX::Role::WithOverloading', '0.13';

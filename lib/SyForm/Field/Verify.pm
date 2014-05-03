@@ -28,9 +28,11 @@ has no_delete_on_invalid_result => (
   default => sub { 0 },
 );
 
-sub BUILD {
-  my ( $self ) = @_;
-  $self->syform->add_role('SyForm::Verify');
-}
+around results_roles_by_values => sub {
+  my ( $orig, $self, $values ) = @_;
+  return $self->$orig($values), qw(
+    SyForm::Results::Success SyForm::Results::Verify
+  );
+};
 
 1;

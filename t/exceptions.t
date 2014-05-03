@@ -5,12 +5,6 @@ use Test::More;
 
 use SyForm;
 
-my $form = SyForm->create([ 'nothing' => {} ]);
-eval { $form->process()->field('nothing')->get_value_by_args(); };
-my $error = $@;
-isa_ok($error,'SyForm::Exception::UnexpectedCallToGetValueByArgs','$error');
-is($error->field->name,'nothing','$error->field->name is correct');
-
 my $form2 = SyForm->create([ 'wronglabel' => { label => [] } ]);
 eval { $form2->field('wronglabel'); };
 my $error2 = $@;

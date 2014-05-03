@@ -4,6 +4,7 @@ use Moose::Role;
 use namespace::autoclean;
 
 with qw(
+  MooseX::Traits
   SyForm::Fields
 );
 
@@ -13,12 +14,23 @@ with qw(
 
 has values => (
   is => 'ro',
-  isa => 'SyForm::Values',
+  does => 'SyForm::Values',
   required => 1,
   handles => [qw(
     syform
     field
   )],
 );
+
+sub get_result {
+  my ( $self, $name ) = @_;
+  $self->$name;
+}
+
+sub has_result {
+  my ( $self, $name ) = @_;
+  my $has_name = 'has_'.$name;
+  $self->$has_name;
+}
 
 1;

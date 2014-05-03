@@ -3,6 +3,10 @@ package SyForm::Field;
 
 use Moose::Role;
 
+with qw(
+  MooseX::Traits
+);
+
 has syform => (
   is => 'ro',
   isa => 'SyForm',
@@ -15,5 +19,12 @@ has name => (
   isa => 'Str',
   required => 1,
 );
+
+has has_name => (
+  is => 'ro',
+  isa => 'Str',
+  lazy_build => 1,
+);
+sub _build_has_name { 'has_'.($_[0]->name) }
 
 1;
