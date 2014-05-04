@@ -39,6 +39,7 @@ around results_roles_by_values => sub {
 around viewfield_roles_by_results => sub {
   my ( $orig, $self, $results ) = @_;
   return $self->$orig($results), qw(
+    SyForm::ViewField::Verify
   );
 };
 

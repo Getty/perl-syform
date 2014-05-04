@@ -16,6 +16,10 @@ my $form = SyForm->create([
     required => 1,
     type => 'Int',
   },
+  'trimmed' => {
+    type => 'Str',
+    verify_filters => [qw( trim )],
+  },
 ]);
 
 ok($form->does('SyForm'),'$form does SyForm');
@@ -32,10 +36,16 @@ ok(!$emptyresults->success,'$emptyresults is no success');
 ok(!$emptyresults->has_require,'require field has no result');
 ok(!$emptyresults->has_integer,'integer field has no result');
 ok(!$emptyresults->has_reqint,'reqint field has no result');
-my $badresults = $form->process_results( require => 'something', integer => "text", reqint => 2 );
+my $badresults = $form->process_results(
+  require => 'something',
+  integer => "text",
+  reqint => 2,
+  trimmed => '  Some text    ',
+);
 ok(!$badresults->success,'$badresults is no success');
 is($badresults->require,'something','result is field with value');
 ok(!$badresults->has_integer,'integer field has no result');
-is($badresults->reqint,'2','result is field with value');
+is($badresults->reqint,'2','reqint has valid value');
+is($badresults->trimmed,'Some text','trimmed has trimmed value');
 
 done_testing;

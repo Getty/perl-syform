@@ -89,6 +89,11 @@ sub custom_view_args_by_results {
   return;
 }
 
+sub viewfield_args_by_results {
+  my ( $self, $results ) = @_;
+  return;
+}
+
 sub view_roles_by_results {
   my ( $self, $values ) = @_;
   return;

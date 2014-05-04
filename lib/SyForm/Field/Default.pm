@@ -4,10 +4,6 @@ package SyForm::Field::Default;
 use Moose::Role;
 use namespace::autoclean;
 
-with qw(
-  SyForm::Field::Process
-);
-
 has default => (
   is => 'ro',
   predicate => 'has_default',

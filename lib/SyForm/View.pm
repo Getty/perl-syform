@@ -95,8 +95,11 @@ sub _build_fields {
   my %viewfield_roles = %{$self->viewfield_roles};
   my %fields;
   for my $field ($self->syform->fields->Values) {
+    my %viewfield_args = $field->viewfield_args_by_results($self->results);
     my @traits = defined $viewfield_roles{$field->name}
       ? (@{$viewfield_roles{$field->name}}) : ();
+    push @traits, @{delete $viewfield_args{roles}}
+        if defined $viewfield_args{roles};
     $fields{$field->name} = $self->create_viewfield($field,
       field => $field,
       roles => [ @traits ],
