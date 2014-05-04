@@ -4,9 +4,8 @@ package SyForm::Results::Success;
 use Moose::Role;
 use namespace::autoclean;
 
-# TODO
 # use MooseX::Role::WithOverloading;
-# use overload q{bool} => 'success';
+# use overload q{bool} => sub { $_[0]->success };
 
 has success => (
   is => 'ro',

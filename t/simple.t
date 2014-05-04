@@ -22,11 +22,11 @@ my $emptyview = $form->process();
 ok($emptyview->does('SyForm::View'),'$emptyview does SyForm::View');
 my $emptyresult = $emptyview->results();
 ok($emptyresult->does('SyForm::Results'),'Result is SyForm::Results');
-ok(!$emptyresult->has_test,'Result has no value for test');
+ok(!$emptyresult->has_result('test'),'Result has no value for test');
 is_deeply($emptyresult->as_hashref,{},'Result hash is empty');
 my $result = $form->process_results( test => 12, ignored => 2 );
 ok($result->does('SyForm::Results'),'Result is SyForm::Results');
-is($result->test,12,'Result of test is fine');
+is($result->get_result('test'),12,'Result of test is fine');
 is_deeply($result->as_hashref,{ test => 12 },'Result as hash is fine');
 # TODO
 # my %result_hash = %{$result};
@@ -61,9 +61,9 @@ ok(!$test4_field->does('SyForm::Field::Process'),'process role loaded on 4rd fie
 my $form2view = $form2->process( test2 => 'lalala' );
 ok($form2view->does('SyForm::View'),'$form2view does SyForm::View');
 my $result2 = $form2view->results();
-ok($result2->has_test2,'Has a test2 result value');
-is($result2->test2,'lalala','Expected test2 result value');
-ok(!$result2->has_test,'Has no test result value');
+ok($result2->has_result('test2'),'Has a test2 result value');
+is($result2->get_result('test2'),'lalala','Expected test2 result value');
+ok(!$result2->has_result('test'),'Has no test result value');
 ok($result2->does('SyForm::Results'),'Result is SyForm::Results');
 is_deeply($result2->field_names,[qw(
   test test2

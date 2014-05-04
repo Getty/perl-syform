@@ -26,9 +26,9 @@ my $form = SyForm->create([
 my $emptyview = $form->process;
 ok($emptyview->does('SyForm::View'),'$emptyview does SyForm::View');
 ok(!$emptyview->success,'empty process has no success');
-is($emptyview->results->four,4,'four gives back default value');
-ok(!$emptyview->results->has_three,'three has no value');
-is($emptyview->results->two,2,'two shows still default on empty process');
+is($emptyview->field('four')->result,4,'four gives back default value');
+ok(!$emptyview->field('three')->has_result,'three has no value');
+is($emptyview->field('two')->result,2,'two shows still default on empty process');
 
 my $view = $form->process( two => 22, three => 33 );
 ok($view->does('SyForm::View'),'$view does SyForm::View');

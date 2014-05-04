@@ -11,15 +11,17 @@ for (qw(
   SyForm::Exception::Role::WithOriginalError
   SyForm::Exception::Role::WithSyForm
   SyForm::Exception::Role::WithSyFormField
+  SyForm::Exception::Role::WithSyFormResults
+  SyForm::Exception::Role::WithSyFormValues
   SyForm::Exception::UnexpectedArgToCreate
   SyForm::Exception::UnexpectedValueOnViewFieldRoles
   SyForm::Exception::UnknownErrorOnBuildField
   SyForm::Exception::UnknownErrorOnBuildFields
   SyForm::Exception::UnknownErrorOnCreate
   SyForm::Exception::UnknownErrorOnProcess
-  SyForm::Exception::UnknownErrorOnProcessResults
   SyForm::Exception::UnknownErrorOnProcessValues
-  SyForm::Exception::UnknownErrorOnProcessView
+  SyForm::Exception::UnknownErrorOnResultsBuildView
+  SyForm::Exception::UnknownErrorOnValuesBuildResults
   SyForm::Exception::ValidationFailedForTypeConstraint
   SyForm::Field
   SyForm::Field::Default
@@ -36,9 +38,12 @@ for (qw(
   SyForm::Results::Success
   SyForm::Results::Verify
   SyForm::Values
+  SyForm::Values::Verify
   SyForm::Verify
   SyForm::View
+  SyForm::View::Errors
   SyForm::ViewField
+  SyForm::ViewField::Verify
   SyForm::View::Success
   SyForm::View::Verify
 )) {

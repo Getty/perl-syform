@@ -11,11 +11,10 @@ sub has_value_by_args {
 
 sub values_args_by_process_args {
   my ( $self, %args ) = @_;
-  my $name = $self->name;
   my @roles = $self->values_roles_by_process_args(%args);
   return (
     $self->has_value_by_args(%args)
-      ? ( $name, $self->get_value_by_process_args(%args) ) : (),
+      ? ( $self->name, $self->get_value_by_process_args(%args) ) : (),
     scalar @roles
       ? ( roles => [ @roles ] ) : (),
   );
@@ -38,13 +37,11 @@ sub get_value_by_process_arg {
 
 sub has_result_by_values {
   my ( $self, $values ) = @_;
-  my $has = $self->has_name;
-  return $values->$has ? 1 : 0;
+  return $values->has_value($self->name) ? 1 : 0;
 }
 
 sub results_args_by_values {
   my ( $self, $values ) = @_;
-  my $name = $self->name;
   my @roles = $self->results_roles_by_values($values);
   return (
     $self->has_result_by_values($values)
@@ -61,8 +58,7 @@ sub results_roles_by_values {
 
 sub get_result_by_values {
   my ( $self, $values ) = @_;
-  my $name = $self->name;
-  return $self->get_result_by_value($values->$name);
+  return $self->get_result_by_value($values->get_value($self->name));
 }
 
 sub get_result_by_value {
@@ -72,9 +68,8 @@ sub get_result_by_value {
 
 sub view_args_by_results {
   my ( $self, $results ) = @_;
-  my $name = $self->name;
   my @roles = $self->view_roles_by_results($results);
-  my @viewfield_roles = $self->view_roles_by_results($results);
+  my @viewfield_roles = $self->viewfield_roles_by_results($results);
   return (
     scalar @roles
       ? ( roles => [ @roles ] ) : (),
@@ -95,7 +90,7 @@ sub viewfield_args_by_results {
 }
 
 sub view_roles_by_results {
-  my ( $self, $values ) = @_;
+  my ( $self, $results ) = @_;
   return;
 }
 

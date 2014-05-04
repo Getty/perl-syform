@@ -309,47 +309,42 @@ sub throw {
   # my $value = $values->value;
   # !$values->can('success'); # values are only the input
   # $results = $form->process_results(%args);
-  # my $result = $results->username;
-  # my $value = $results->values->username; # same as above $value
+  # my $result = $results->get_result('username');
+  # my $value = $results->values->get_value('username');
   # my $success = $result->success # result is after check
 
-  for (@{$view->field_names}) {
-    my $input_value = $view->field($_)->value;
+  for my $field_name (@{$view->field_names}) {
+    my $input_value = $view->field($field_name)->value;
     if ($view->success) {
-      my $verified_result = $view->field($_)->result;  
+      my $verified_result = $view->field($field_name)->result;  
     } else {
-      my $verified_result_if_exist = $view->field($_)->result;
+      # result is filled for all valid fields, even on invalid form
+      my $verified_result_if_exist = $view->field($field_name)->result;
     }
     # for access to the main SyForm::Field of the view field
-    my $syform_field = $view->field($_)->field;
+    my $syform_field = $view->field($field_name)->field;
   }
 
 =head1 DESCRIPTION
 
 SyForm is developed for L<SyContent|https://sycontent.de/>.
 
-B<SyForm> has many B<SyForm::Field>. You get a form object with calling
-B<create([@fields], %form_args)> on B<SyForm>.
+L<SyForm> has many L<SyForm::Field>. You get a form object with calling
+B<create([@fields], %form_args)> on L<SyForm>.
 
-With B<SyForm::Process> (automatically added) you can give it B<process_args>
-via calling of B<process(%args)> on your form object that you get from the
+With L<SyForm::Process> (automatically added) you can give it L<process_args>
+via calling of L<process(%args)> on your form object that you get from the
 create.
 
-This call to process creates internally a B<SyForm::Values> out of the process
+This call to process creates internally a L<SyForm::Values> out of the process
 args together with the help of the fields. Those again use this to produce a
-B<SyForm::Results> with the final results of the process.
+L<SyForm::Results> with the final results of the process.
 
-Those end up in a B<SyForm::View> together with a B<SyForm::ViewField> for
-every B<SyForm::Field> that is used in the process flow. The view field allows
-easy access to the B<SyForm::Values> values, the B<SyForm::Results> results
-and the actually B<SyForm::Field> definition, to get a complete access of
+Those end up in a L<SyForm::View> together with a L<SyForm::ViewField> for
+every L<SyForm::Field> that is used in the process flow. The view field allows
+easy access to the L<SyForm::Values> values, the L<SyForm::Results> results
+and the actually L<SyForm::Field> definition, to get a complete access of
 all variables in the rendering.
-
-B<WARNING>: B<SyForm::Values> and B<SyForm::Results> produce L<Moose>
-attributes for storing their data, those are named directly after the key
-given for the field on the definition. This is highly risky for collides
-so its best to avoid using any term used in SyForm as key for those fields.
-This will change and getting real attributes will become an optional feature.
 
 =head1 SUPPORT
 
