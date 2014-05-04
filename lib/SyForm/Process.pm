@@ -253,13 +253,10 @@ sub process_values {
     my %values_args;
     my @values_traits;
     for my $field (@{$self->process_fields}) {
-      if ($field->has_value_by_args(%args)) {
-        my ( $value, @traits ) = $field->value_values_roles_by_args(%args);
-        $values_args{$field->name} = $value;
-        push @values_traits, @traits;
-      } else {
-        push @values_traits, $field->values_roles_by_args(%args);
-      }
+      my %field_values_args = $field->values_args_by_process_args(%args);
+      push @values_traits, @{delete $field_values_args{roles}}
+        if defined $field_values_args{roles};
+      $values_args{$_} = $field_values_args{$_} for keys %field_values_args;
     }
     $values = $self->create_values(
       roles => [uniq @values_traits],
@@ -301,13 +298,10 @@ sub process_results {
     my %results_args;
     my @results_traits;
     for my $field (@{$self->process_fields}) {
-      if ($field->has_result_by_values($values)) {
-        my ( $value, @traits ) = $field->result_results_roles_by_values($values);
-        $results_args{$field->name} = $value;
-        push @results_traits, @traits;
-      } else {
-        push @results_traits, $field->results_roles_by_values($values);
-      }
+      my %field_results_args = $field->results_args_by_values($values);
+      push @results_traits, @{delete $field_results_args{roles}}
+        if defined $field_results_args{roles};
+      $results_args{$_} = $field_results_args{$_} for keys %field_results_args;
     }
     $results = $self->create_results($values, 
       roles => [uniq @results_traits],
@@ -345,26 +339,36 @@ sub process_view {
   my $view;
   my $results = $self->process_results(%args);
   eval {
+    my %view_args;
     my %viewfield_traits;
     my @view_traits;
     for my $field (@{$self->process_fields}) {
-      my @vfrvr = $field->viewfield_roles_view_roles_by_results($results);
-      my $count = scalar @vfrvr;
-      if ($count == 0) {
-        # explicit does nothing
-      } elsif ($count == 1) {
-        my @vfr = ref $vfrvr[0] eq 'ARRAY' ? (@{$vfrvr[0]}) : @vfrvr;
-        $viewfield_traits{$field->name} = [ @vfr ];
-      } else {
-        my @vfr = @{shift @vfrvr};
-        my @vr = ref $vfrvr[0] eq 'ARRAY' ? (@{$vfrvr[0]}) : @vfrvr;
-        $viewfield_traits{$field->name} = [ @vfr ];
-        push @view_traits, @vr;
+      my %field_view_args = $field->view_args_by_results($results);
+      push @view_traits, @{delete $field_view_args{roles}}
+        if defined $field_view_args{roles};
+      if (defined $field_view_args{viewfield_roles}) {
+        my $field_viewfield_roles = delete $field_view_args{viewfield_roles};
+        my $ref = ref $field_viewfield_roles;
+        $viewfield_traits{$field->name} = []
+          unless defined $viewfield_traits{$field->name};
+        if (!$ref) {
+          push @{$viewfield_traits{$field->name}}, $field_viewfield_roles;
+        } elsif ($ref eq 'ARRAY') {
+          push @{$viewfield_traits{$field->name}}, @{$field_viewfield_roles};
+        } elsif ($ref eq 'HASH') {
+          for my $key (%{$field_viewfield_roles}) {
+            push @{$viewfield_traits{$key}}, @{$field_viewfield_roles->{$key}};
+          }
+        } else {
+          SyForm->throw( UnexpectedValueOnViewFieldRoles => $field, $ref );
+        }
       }
+      $view_args{$_} = $field_view_args{$_} for keys %field_view_args;
     }
     $view = $self->create_view($results,
       roles => [uniq @view_traits],
       viewfield_roles => { %viewfield_traits },
+      %view_args,
     );
   };
   SyForm->throw( UnknownErrorOnProcessView => $self,[@process_view_args], $@ ) if $@;

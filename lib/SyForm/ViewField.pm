@@ -3,10 +3,18 @@ package SyForm::ViewField;
 
 use Moose::Role;
 
+with qw(
+  MooseX::Traits
+);
+
 has view => (
   is => 'ro',
   isa => 'SyForm::View',
   required => 1,
+  handles => [qw(
+    viewfield
+    results
+  )],
 );
 
 has field => (
@@ -40,6 +48,12 @@ sub result {
   my ( $self ) = @_;
   my $name = $self->field->name;
   $self->results->get_result($name);
+}
+
+sub val {
+  my ( $self ) = @_;
+  return $self->result if $self->has_result;
+  return $self->value if $self->has_value;
 }
 
 1;

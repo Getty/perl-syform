@@ -80,6 +80,7 @@ my $result3 = SyForm->create([
   },
   'test5' => {},
 ])->process_results();
+
 is_deeply($result3->field_names,[qw(
   test test2 test3 test5
 )],'Other field names are also in correct order');

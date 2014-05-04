@@ -9,18 +9,29 @@ sub has_value_by_args {
   return exists($args{$self->name}) ? 1 : 0;
 }
 
-sub value_values_roles_by_args {
+sub values_args_by_process_args {
   my ( $self, %args ) = @_;
-  return $self->get_value_by_arg($args{$self->name}),
-    $self->values_roles_by_args(%args);
+  my $name = $self->name;
+  my @roles = $self->values_roles_by_process_args(%args);
+  return (
+    $self->has_value_by_args(%args)
+      ? ( $name, $self->get_value_by_process_args(%args) ) : (),
+    scalar @roles
+      ? ( roles => [ @roles ] ) : (),
+  );
 }
 
-sub values_roles_by_args { 
+sub values_roles_by_process_args { 
   my ( $self, %args ) = @_;
   return;
 }
 
-sub get_value_by_arg {
+sub get_value_by_process_args {
+  my ( $self, %args ) = @_;
+  return $self->get_value_by_process_arg($args{$self->name});
+}
+
+sub get_value_by_process_arg {
   my ( $self, $arg ) = @_;
   return $arg;
 }
@@ -31,11 +42,16 @@ sub has_result_by_values {
   return $values->$has ? 1 : 0;
 }
 
-sub result_results_roles_by_values {
+sub results_args_by_values {
   my ( $self, $values ) = @_;
   my $name = $self->name;
-  return $self->get_result_by_value($values->$name),
-    $self->results_roles_by_values($values);
+  my @roles = $self->results_roles_by_values($values);
+  return (
+    $self->has_result_by_values($values)
+      ? ( $self->name, $self->get_result_by_values($values) ) : (),
+    scalar @roles
+      ? ( roles => [ @roles ] ) : (),
+  );
 }
 
 sub results_roles_by_values {
@@ -54,7 +70,31 @@ sub get_result_by_value {
   return $value;
 }
 
-sub viewfield_roles_view_roles_by_results {
+sub view_args_by_results {
+  my ( $self, $results ) = @_;
+  my $name = $self->name;
+  my @roles = $self->view_roles_by_results($results);
+  my @viewfield_roles = $self->view_roles_by_results($results);
+  return (
+    scalar @roles
+      ? ( roles => [ @roles ] ) : (),
+    scalar @viewfield_roles
+      ? ( viewfield_roles => [ @viewfield_roles ] ) : (),
+    $self->custom_view_args_by_results,
+  );
+}
+
+sub custom_view_args_by_results {
+  my ( $self, $results ) = @_;
+  return;
+}
+
+sub view_roles_by_results {
+  my ( $self, $values ) = @_;
+  return;
+}
+
+sub viewfield_roles_by_results {
   my ( $self, $results ) = @_;
   return;
 }

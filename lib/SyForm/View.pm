@@ -23,7 +23,7 @@ has results => (
 #############
 
 has viewfield_roles => (
-  isa => 'HashRef[Str]',
+  isa => 'HashRef[Str|ArrayRef[Str]]',
   is => 'ro',
   lazy => 1,
   default => sub {{}},
@@ -52,7 +52,7 @@ has viewfield_class => (
 
 sub _build_viewfield_class {
   my ( $self ) = @_;
-  return $self->_view_metaclass->name;
+  return $self->_viewfield_metaclass->name;
 }
 
 has _viewfield_metaclass => (
@@ -84,29 +84,31 @@ sub _build_field_names {
 
 has fields => (
   is => 'ro',
-  isa => 'ArrayRef[SyForm::ViewField]',
+  isa => 'HashRef[SyForm::ViewField]',
   lazy_build => 1,
 );
+sub field { shift->fields->{(shift)} }
+sub viewfield { shift->fields->{(shift)} }
 
 sub _build_fields {
   my ( $self ) = @_;
   my %viewfield_roles = %{$self->viewfield_roles};
-  my @fields;
-  for my $field (@{$self->syform->fields->Values}) {
+  my %fields;
+  for my $field ($self->syform->fields->Values) {
     my @traits = defined $viewfield_roles{$field->name}
       ? (@{$viewfield_roles{$field->name}}) : ();
-    push @fields, $self->create_viewfield($field,
+    $fields{$field->name} = $self->create_viewfield($field,
       field => $field,
       roles => [ @traits ],
     );
   }
-  return [ @fields ];
+  return { %fields };
 }
 
 sub create_viewfield {
   my ( $self, $field, %args ) = @_;
   my @traits = @{delete $args{roles}};
-  return $self->values_class->new_with_traits({
+  return $self->viewfield_class->new_with_traits({
     traits => [@traits],
     field => $field,
     view => $self,

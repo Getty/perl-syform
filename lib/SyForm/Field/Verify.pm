@@ -31,7 +31,21 @@ has no_delete_on_invalid_result => (
 around results_roles_by_values => sub {
   my ( $orig, $self, $values ) = @_;
   return $self->$orig($values), qw(
-    SyForm::Results::Success SyForm::Results::Verify
+    SyForm::Results::Success
+    SyForm::Results::Verify
+  );
+};
+
+around viewfield_roles_by_results => sub {
+  my ( $orig, $self, $results ) = @_;
+  return $self->$orig($results), qw(
+  );
+};
+
+around view_roles_by_results => sub {
+  my ( $orig, $self, $results ) = @_;
+  return $self->$orig($results), qw(
+    SyForm::View::Success
   );
 };
 

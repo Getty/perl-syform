@@ -20,11 +20,10 @@ around has_value_by_args => sub {
   return 0;
 };
 
-around get_value_by_args => sub {
+around get_value_by_process_args => sub {
   my ( $orig, $self, %args ) = @_;
-  return $self->$orig(%args) if $self->has_value_by_args(%args);
-  return $self->default if $self->has_default;
-  SyForm->throw( UnexpectedCallToGetValueByArgs => $self );
+  return $self->default if !exists($args{$self->name}) && $self->has_default;
+  return $self->$orig(%args);
 };
 
 1;

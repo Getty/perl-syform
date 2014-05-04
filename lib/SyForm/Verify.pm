@@ -33,6 +33,7 @@ sub verify_values {
   my ( $self, $values ) = @_;
   my %profile;
   for my $field (@{$self->process_fields}) {
+    next unless $field->does('SyForm::Field::Verify');
     my $name = $field->name;
     my %args;
     $args{required} = $field->required if $field->has_required;
