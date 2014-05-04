@@ -320,7 +320,7 @@ sub throw {
     } else {
       my $verified_result_if_exist = $view->field($_)->result;
     }
-    # for access to the main B<SyForm::Field> of the view field
+    # for access to the main SyForm::Field of the view field
     my $syform_field = $view->field($_)->field;
   }
 
@@ -328,11 +328,12 @@ sub throw {
 
 SyForm is developed for L<SyContent|https://sycontent.de/>.
 
-B<SyForm> has many B<SyForm::Field>.
+B<SyForm> has many B<SyForm::Field>. You get a form object with calling
+B<create([@fields], %form_args)> on B<SyForm>.
 
 With B<SyForm::Process> (automatically added) you can give it B<process_args>
 via calling of B<process(%args)> on your form object that you get from the
-B<create>.
+create.
 
 This call to process creates internally a B<SyForm::Values> out of the process
 args together with the help of the fields. Those again use this to produce a
