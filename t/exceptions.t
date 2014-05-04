@@ -11,7 +11,7 @@ my $error2 = $@;
 isa_ok($error2,'SyForm::Exception::ValidationFailedForTypeConstraint','$error2');
 is($error2->field_name,'wronglabel','$error2->field_name is correct');
 
-eval { SyForm->create({},[]); };
+eval { SyForm->create({},[]) };
 my $error3 = $@;
 isa_ok($error3,'SyForm::Exception::UnexpectedArgToCreate','$error3');
 is($error3->error_ref,'HASH','$error3->error_ref is correct');

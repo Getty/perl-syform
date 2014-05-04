@@ -12,6 +12,7 @@ for (qw(
   SyForm::Exception::Role::WithSyForm
   SyForm::Exception::Role::WithSyFormField
   SyForm::Exception::UnexpectedArgToCreate
+  SyForm::Exception::UnexpectedValueOnViewFieldRoles
   SyForm::Exception::UnknownErrorOnBuildField
   SyForm::Exception::UnknownErrorOnBuildFields
   SyForm::Exception::UnknownErrorOnCreate
@@ -39,6 +40,7 @@ for (qw(
   SyForm::View
   SyForm::ViewField
   SyForm::View::Success
+  SyForm::View::Verify
 )) {
   use_ok($_);
 }
