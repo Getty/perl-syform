@@ -1,6 +1,7 @@
 package SyForm::Fields;
+# ABSTRACT: Role for SyForm::Values and SyForm::Results holding the fields
 
-use MooseX::Role::WithOverloading;
+use Moose::Role;
 ################ TODO
 # use overload
 #   q{%{}} => sub { use DDP; p($_[0]); 

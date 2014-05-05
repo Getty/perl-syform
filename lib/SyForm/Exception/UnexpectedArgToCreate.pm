@@ -1,4 +1,5 @@
 package SyForm::Exception::UnexpectedArgToCreate;
+# ABSTRACT: Arguments given to SyForm->create are invalid
 
 use Moose;
 extends 'SyForm::Exception';

@@ -1,5 +1,5 @@
 package SyForm;
-# ABSTRACT: SyForm - a role driven form management
+# ABSTRACT: A role driven, readonly attributes, form management
 
 =encoding utf8
 
@@ -9,12 +9,11 @@ package SyForm;
 
   my $form = SyForm->create([
     'username' => {
-      isa => 'Str',
       required => 1,
       label => 'Your name',
     },
     'age' => {
-      isa => 'Int',
+      decimal => 1,
       label => 'Your age',
     },
     'unchecked' => {
@@ -73,6 +72,10 @@ every L<SyForm::Field> that is used in the process flow. The view field allows
 easy access to the L<SyForm::Values> values, the L<SyForm::Results> results
 and the actually L<SyForm::Field> definition, to get a complete access of
 all variables in the rendering.
+
+For validation L<SyForm> implements L<Validation::Class> and so
+most of the directives available there are available in L<SyForm>.
+A complete list can be found at L<SyForm::Field::Verify>.
 
 =head1 SUPPORT
 

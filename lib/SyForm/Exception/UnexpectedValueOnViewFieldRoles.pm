@@ -1,4 +1,5 @@
 package SyForm::Exception::UnexpectedValueOnViewFieldRoles;
+# ABSTRACT: viewfield_roles of the field is not giving back valid roles
 
 use Moose;
 extends 'SyForm::Exception';

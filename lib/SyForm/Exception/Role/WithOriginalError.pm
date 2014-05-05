@@ -1,4 +1,5 @@
 package SyForm::Exception::Role::WithOriginalError;
+# ABSTRACT: Role for exceptions with a non SyForm error
 
 use Moose::Role;
 

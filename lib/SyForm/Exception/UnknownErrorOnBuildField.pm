@@ -1,4 +1,5 @@
 package SyForm::Exception::UnknownErrorOnBuildField;
+# ABSTRACT: Exception at the building of one specific field on a SyForm
 
 use Moose;
 extends 'SyForm::Exception';

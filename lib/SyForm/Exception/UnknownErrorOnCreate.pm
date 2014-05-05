@@ -1,4 +1,5 @@
 package SyForm::Exception::UnknownErrorOnCreate;
+# ABSTRACT: Exception at SyForm->create
 
 use Moose;
 extends 'SyForm::Exception';

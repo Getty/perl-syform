@@ -1,8 +1,8 @@
 package SyForm::Class;
-# ABSTRACT: Make a SyForm class with fields
+# ABSTRACT: TODO
 
 use Moose;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 # TODO
 

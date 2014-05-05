@@ -1,8 +1,9 @@
 package SyForm::Results;
+# ABSTRACT: Results of the processing of SyForm::Values
 
 use Moose::Role;
 use List::MoreUtils qw( uniq );
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 with qw(
   MooseX::Traits

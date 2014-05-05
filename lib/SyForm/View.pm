@@ -1,4 +1,5 @@
 package SyForm::View;
+# ABSTRACT: Container for SyForm::Results and SyForm::ViewField
 
 use Moose::Role;
 use namespace::clean -except => 'meta';

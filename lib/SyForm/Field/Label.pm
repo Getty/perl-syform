@@ -1,8 +1,8 @@
 package SyForm::Field::Label;
-# ABSTRACT: A label for a field
+# ABSTRACT: A label for the field
 
 use Moose::Role;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 has label => (
   is => 'ro',

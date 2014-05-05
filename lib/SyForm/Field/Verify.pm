@@ -1,8 +1,8 @@
 package SyForm::Field::Verify;
-# ABSTRACT: Required field
+# ABSTRACT: SyForm::Verify configuration of the field
 
 use Moose::Role;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 our @validation_class_directives = qw(
   required

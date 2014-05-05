@@ -1,9 +1,9 @@
 package SyForm::Values::Verify;
-# ABSTRACT:
+# ABSTRACT: Verification of values for the SyForm::Results
 
 use Moose::Role;
 use Validation::Class::Simple;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 around create_results => sub {
   my ( $orig, $self, %args ) = @_;

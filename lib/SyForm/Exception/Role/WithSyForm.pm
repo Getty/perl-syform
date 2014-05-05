@@ -1,4 +1,5 @@
 package SyForm::Exception::Role::WithSyForm;
+# ABSTRACT: Role for exceptions with a SyForm instance as reference
 
 use Moose::Role;
 

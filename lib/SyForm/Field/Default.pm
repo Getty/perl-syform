@@ -1,8 +1,8 @@
 package SyForm::Field::Default;
-# ABSTRACT: A default for a field
+# ABSTRACT: A default for the field
 
 use Moose::Role;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 has default => (
   is => 'ro',

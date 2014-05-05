@@ -1,4 +1,5 @@
 package SyForm::Exception::Role::WithSyFormResults;
+# ABSTRACT: Role for exceptions with a SyForm::Results
 
 use Moose::Role;
 

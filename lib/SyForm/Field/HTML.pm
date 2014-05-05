@@ -1,8 +1,8 @@
 package SyForm::Field::HTML;
-# ABSTRACT: HTML attributes for a field
+# ABSTRACT: HTML attributes for the field
 
 use Moose::Role;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 has html => (
   is => 'rw',

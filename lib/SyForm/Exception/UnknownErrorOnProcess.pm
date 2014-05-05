@@ -1,4 +1,5 @@
 package SyForm::Exception::UnknownErrorOnProcess;
+# ABSTRACT: Exception on SyForm::Process->process
 
 use Moose;
 extends 'SyForm::Exception';

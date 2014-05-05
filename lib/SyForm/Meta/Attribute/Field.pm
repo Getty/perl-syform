@@ -1,8 +1,8 @@
 package SyForm::Meta::Attribute::Field;
-# ABSTRACT: Role for SyForm fields of SyForm::Results and SyForm::Values meta attributes
+# ABSTRACT: Role for SyForm fields meta attributes
 
 use Moose::Role;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 has field => (
   is => 'ro',

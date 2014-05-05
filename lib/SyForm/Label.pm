@@ -1,8 +1,8 @@
 package SyForm::Label;
-# ABSTRACT: A label for a form
+# ABSTRACT: A label for the form
 
 use Moose::Role;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 has label => (
   is => 'ro',
