@@ -105,9 +105,13 @@ sub _build_view_object_class { $_[0]->syform->object_class }
 has view_roles => (
   isa => 'ArrayRef[Str]',
   is => 'ro',
-  lazy => 1,
-  default => sub {[]},
+  lazy_build => 1,
 );
+
+sub _build_view_roles {
+  my ( $self ) = @_;
+  return $self->values->view_roles;
+}
 
 has _view_metaclass => (
   isa => 'Moose::Meta::Class',

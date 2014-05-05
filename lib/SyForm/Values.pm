@@ -80,9 +80,24 @@ sub _build_results_object_class { $_[0]->syform->object_class }
 has results_roles => (
   isa => 'ArrayRef[Str]',
   is => 'ro',
-  lazy => 1,
-  default => sub {[]},
+  lazy_build => 1,
 );
+
+sub _build_results_roles {
+  my ( $self ) = @_;
+  return $self->syform->results_roles;
+}
+
+has view_roles => (
+  isa => 'ArrayRef[Str]',
+  is => 'ro',
+  lazy_build => 1,
+);
+
+sub _build_view_roles {
+  my ( $self ) = @_;
+  return $self->syform->view_roles;
+}
 
 sub _get_results_meta_attribute {
   my ( $self, $field, %args ) = @_; 

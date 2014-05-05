@@ -13,10 +13,4 @@ has field => (
   )],
 );
 
-has results => (
-  is => 'ro',
-  does => 'SyForm::Results',
-  required => 1,
-);
-
 1;

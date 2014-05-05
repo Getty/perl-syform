@@ -1,14 +1,18 @@
 package SyForm::Values::Object;
-# ABSTRACT: Adding SyForm::Results::Object to results_roles
+# ABSTRACT: Functionality for SyForm::Values to deliver a Moose object
 
 use Moose::Role;
 use namespace::clean -except => 'meta';
 
-around results_roles => sub {
-  my ( $orig, $self, @args ) = @_;
-  return [
-    @{$self->$orig(@args)}, 'SyForm::Results::Object'
-  ];
-};
+has object => (
+  is => 'ro',
+  isa => 'Moose::Object',
+  lazy_build => 1,
+);
+
+sub _build_object {
+  my ( $self ) = @_;
+  return $self->syform->fields_object_class->new($self->as_hashref);
+}
 
 1;

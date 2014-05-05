@@ -23,9 +23,10 @@ sub _build_values_object_class { $_[0]->object_class }
 has values_roles => (
   isa => 'ArrayRef[Str]',
   is => 'ro',
-  lazy => 1,
-  default => sub {[]},
+  lazy_build => 1,
 );
+
+sub _build_values_roles {[]}
 
 has values_metaclass => (
   isa => 'Moose::Meta::Class',
@@ -119,7 +120,7 @@ sub create_values {
   }
   return $self->values_class->new_with_traits({
     syform => $self,
-    traits => [ @traits ],
+    scalar @traits ? ( traits => [@traits] ) : (),
     values => { %values },
     %args,
   });
@@ -130,6 +131,14 @@ sub create_values {
 # Process Results
 #
 ##################
+
+has results_roles => (
+  isa => 'ArrayRef[Str]',
+  is => 'ro',
+  lazy_build => 1,
+);
+
+sub _build_results_roles {[]}
 
 sub process_results {
   my ( $self, %args ) = @_;
@@ -144,6 +153,14 @@ sub process_results {
 # Process View
 #
 ###############
+
+has view_roles => (
+  isa => 'ArrayRef[Str]',
+  is => 'ro',
+  lazy_build => 1,
+);
+
+sub _build_view_roles {[]}
 
 sub process_view {
   my ( $self, %args ) = @_;
