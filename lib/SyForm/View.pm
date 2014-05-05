@@ -113,7 +113,7 @@ sub create_viewfield {
   my ( $self, $field, %args ) = @_;
   my @traits = @{delete $args{roles}};
   return $self->viewfield_class->new_with_traits({
-    traits => [@traits],
+    scalar @traits ? ( traits => [@traits] ) : (),
     field => $field,
     view => $self,
     %args,

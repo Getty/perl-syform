@@ -39,7 +39,7 @@ sub _build_view {
   eval {
     my %view_args;
     my %viewfield_traits;
-    my @view_traits;
+    my @view_traits = @{$self->view_roles};
     for my $field (@{$self->syform->process_fields}) {
       my %field_view_args = $field->view_args_by_results($self);
       push @view_traits, @{delete $field_view_args{roles}}
@@ -78,7 +78,7 @@ sub create_view {
   my @traits = @{delete $args{roles}};
   my %viewfield_traits = %{delete $args{viewfield_roles}};
   return $self->view_class->new_with_traits({
-    traits => [ @traits ],
+    scalar @traits ? ( traits => [@traits] ) : (),
     results => $self,
     viewfield_roles => { %viewfield_traits },
     %args,

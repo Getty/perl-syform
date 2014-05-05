@@ -27,13 +27,13 @@ has values_roles => (
   default => sub {[]},
 );
 
-has _values_metaclass => (
+has values_metaclass => (
   isa => 'Moose::Meta::Class',
   is => 'ro',
   lazy_build => 1,
 );
 
-sub _build__values_metaclass {
+sub _build_values_metaclass {
   my ( $self ) = @_;
   return Moose::Meta::Class->create(
     (ref $self).'::Values',
@@ -50,7 +50,7 @@ has values_class => (
 
 sub _build_values_class {
   my ( $self ) = @_;
-  return $self->_values_metaclass->name;
+  return $self->values_metaclass->name;
 }
 
 ##########
@@ -91,7 +91,7 @@ sub process_values {
   my $values;
   eval {
     my %values_args;
-    my @values_traits;
+    my @values_traits = @{$self->values_roles};
     for my $field (@{$self->process_fields}) {
       my %field_values_args = $field->values_args_by_process_args(%args);
       push @values_traits, @{delete $field_values_args{roles}}

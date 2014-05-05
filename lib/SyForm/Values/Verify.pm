@@ -49,7 +49,7 @@ sub verify_values {
       $params{$name} = $values->get_value($name)
         if $values->has_value($name) || $field->required;
       # required case, cause Validate::Class doesnt really
-      # check for required if the params doesnt exist. 
+      # check for required if the param doesnt exist. 
     }
   }
   return Validation::Class::Simple->new(

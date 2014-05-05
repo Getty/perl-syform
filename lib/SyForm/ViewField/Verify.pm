@@ -2,7 +2,7 @@ package SyForm::ViewField::Verify;
 # ABSTRACT: Trait for SyForm fields of SyForm::Results and SyForm::Values attributes
 
 use Moose::Role;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 sub is_invalid {
   my ( $self ) = @_;

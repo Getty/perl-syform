@@ -37,7 +37,7 @@ sub _build_results {
   my $results;
   eval {
     my %results_args;
-    my @results_traits;
+    my @results_traits = @{$self->results_roles};
     for my $field (@{$self->syform->process_fields}) {
       my %field_results_args = $field->results_args_by_values($self);
       push @results_traits, @{delete $field_results_args{roles}}
@@ -63,7 +63,7 @@ sub create_results {
     $results{$_} = delete $args{$_} if defined $args{$_};
   }
   return $self->results_class->new_with_traits({
-    traits => [@traits],
+    scalar @traits ? ( traits => [@traits] ) : (),
     values => $self,
     results => { %results },
     %args

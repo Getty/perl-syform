@@ -2,7 +2,7 @@ package SyForm::Field::Process;
 # ABSTRACT: Role for processed fields
 
 use Moose::Role;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 sub has_value_by_args {
   my ( $self, %args ) = @_;

@@ -2,7 +2,7 @@ package SyForm::View::Verify;
 # ABSTRACT: Trait for SyForm fields of SyForm::Results and SyForm::Values attributes
 
 use Moose::Role;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 has error_count => (
   is => 'ro',

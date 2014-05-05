@@ -2,7 +2,7 @@ package SyForm::Field;
 # ABSTRACT: Role for fields in SyForm
 
 use Moose::Role;
-use namespace::clean;
+use namespace::clean -except => 'meta';
 
 with qw(
   MooseX::Traits

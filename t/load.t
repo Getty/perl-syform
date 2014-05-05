@@ -28,7 +28,6 @@ for (qw(
   SyForm::Field::HTML
   SyForm::Field::Label
   SyForm::Field::Process
-
   SyForm::Fields
   SyForm::Field::Verify
   SyForm::Label
@@ -41,7 +40,6 @@ for (qw(
   SyForm::Values::Verify
   SyForm::Verify
   SyForm::View
-  SyForm::View::Errors
   SyForm::ViewField
   SyForm::ViewField::Verify
   SyForm::View::Success

@@ -6,11 +6,17 @@ use namespace::clean -except => 'meta';
 
 has field => (
   is => 'ro',
-  isa => 'SyForm::Field',
+  does => 'SyForm::Field',
   required => 1,
   handles => [qw(
     syform
   )],
+);
+
+has results => (
+  is => 'ro',
+  does => 'SyForm::Results',
+  required => 1,
 );
 
 1;
