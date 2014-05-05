@@ -2,6 +2,7 @@ package SyForm::ViewField;
 # ABSTRACT: Role for fields inside a View
 
 use Moose::Role;
+use namespace::clean -except => 'meta';
 
 with qw(
   MooseX::Traits

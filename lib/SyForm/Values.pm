@@ -2,7 +2,7 @@ package SyForm::Values;
 
 use Moose::Role;
 use List::MoreUtils qw( uniq );
-use namespace::autoclean;
+use namespace::clean -except => 'meta';
 
 with qw(
   MooseX::Traits

@@ -1,7 +1,7 @@
 package SyForm::View;
 
 use Moose::Role;
-use namespace::autoclean;
+use namespace::clean -except => 'meta';
 
 with qw(
   MooseX::Traits

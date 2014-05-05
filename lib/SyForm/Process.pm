@@ -5,7 +5,7 @@ use Moose::Role;
 use Moose::Meta::Class;
 use Moose::Meta::Attribute;
 use List::MoreUtils qw( uniq );
-use namespace::autoclean;
+use namespace::clean;
 
 #########
 #

@@ -2,7 +2,7 @@ package SyForm::Field::HTML;
 # ABSTRACT: HTML attributes for a field
 
 use Moose::Role;
-use namespace::autoclean;
+use namespace::clean;
 
 has html => (
   is => 'rw',

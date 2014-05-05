@@ -2,25 +2,43 @@ package SyForm::Field::Verify;
 # ABSTRACT: Required field
 
 use Moose::Role;
-use namespace::autoclean;
+use namespace::clean;
 
-has required => (
-  is => 'ro',
-  isa => 'Bool',
-  predicate => 'has_required',
+our @validation_class_directives = qw(
+  required
+  between
+  date
+  decimal
+  depends_on
+  email
+  error
+  hostname
+  length
+  matches
+  time
+  options
+  pattern
+  messages
+  filters
+  readonly
+  max_alpha
+  max_digits
+  max_length
+  max_sum
+  max_symbols
+  min_alpha
+  min_digits
+  min_length
+  min_sum
+  min_symbols
 );
 
-has type => (
-  is => 'ro',
-  isa => 'Str',
-  predicate => 'has_type',
-);
-
-has verify_filters => (
-  is => 'ro',
-  isa => 'ArrayRef[Str]',
-  predicate => 'has_verify_filters',
-);
+for (@validation_class_directives) {
+  has $_ => (
+    is => 'ro',
+    predicate => 'has_'.$_,
+  );
+}
 
 has no_delete_on_invalid_result => (
   is => 'ro',
@@ -45,14 +63,12 @@ around results_roles_by_values => sub {
 
 around viewfield_roles_by_results => sub {
   my ( $orig, $self, $results ) = @_;
-  return $self->$orig($results), qw( SyForm::ViewField::Verify ),
-    $self->syform->verify_without_errors ? () : (qw( SyForm::ViewField::Errors ));
+  return $self->$orig($results), qw( SyForm::ViewField::Verify );
 };
 
 around view_roles_by_results => sub {
   my ( $orig, $self, $results ) = @_;
-  return $self->$orig($results), qw( SyForm::View::Success ),
-    $self->syform->verify_without_errors ? () : (qw( SyForm::View::Errors ));
+  return $self->$orig($results), qw( SyForm::View::Success );
 };
 
 1;

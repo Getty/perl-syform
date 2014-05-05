@@ -1,6 +1,96 @@
 package SyForm;
 # ABSTRACT: SyForm - a role driven form management
 
+=encoding utf8
+
+=head1 SYNOPSIS
+
+  use SyForm;
+
+  my $form = SyForm->create([
+    'username' => {
+      isa => 'Str',
+      required => 1,
+      label => 'Your name',
+    },
+    'age' => {
+      isa => 'Int',
+      label => 'Your age',
+    },
+    'unchecked' => {
+      label => 'Unchecked',
+    },
+  ]);
+
+  $form->does('SyForm'); # its all roles
+  $form->field('username')->does('SyForm::Field');
+  $form->field('username')->does('SyForm::Field::Label');
+  $form->field('username')->does('SyForm::Field::Verify');
+
+  # Roles are only automatically loaded on requirement
+  !$form->field('unchecked')->does('SyForm::Field::Verify');
+
+  my $view = $form->process( username => 'YoCoolCopKiller', age => 13 );
+
+  # or ...
+  # $values = $form->process_values(%args);
+  # my $value = $values->value;
+  # !$values->can('success'); # values are only the input
+  # $results = $form->process_results(%args);
+  # my $result = $results->get_result('username');
+  # my $value = $results->values->get_value('username');
+  # my $success = $result->success # result is after check
+
+  for my $field_name (@{$view->field_names}) {
+    my $input_value = $view->field($field_name)->value;
+    if ($view->success) {
+      my $verified_result = $view->field($field_name)->result;  
+    } else {
+      # result is filled for all valid fields, even on invalid form
+      my $verified_result_if_exist = $view->field($field_name)->result;
+    }
+    # for access to the main SyForm::Field of the view field
+    my $syform_field = $view->field($field_name)->field;
+  }
+
+=head1 DESCRIPTION
+
+SyForm is developed for L<SyContent|https://sycontent.de/>.
+
+L<SyForm> has many L<SyForm::Field>. You get a form object with calling
+B<create([@fields], %form_args)> on L<SyForm>.
+
+With L<SyForm::Process> (automatically added) you can give it L<process_args>
+via calling of L<process(%args)> on your form object that you get from the
+create.
+
+This call to process creates internally a L<SyForm::Values> out of the process
+args together with the help of the fields. Those again use this to produce a
+L<SyForm::Results> with the final results of the process.
+
+Those end up in a L<SyForm::View> together with a L<SyForm::ViewField> for
+every L<SyForm::Field> that is used in the process flow. The view field allows
+easy access to the L<SyForm::Values> values, the L<SyForm::Results> results
+and the actually L<SyForm::Field> definition, to get a complete access of
+all variables in the rendering.
+
+=head1 SUPPORT
+
+IRC
+
+  Join #sycontent on irc.perl.org. Highlight Getty for fast reaction :).
+
+Repository
+
+  http://github.com/SyContent/SyForm
+  Pull request and additional contributors are welcome
+ 
+Issue Tracker
+
+  http://github.com/SyContent/SyForm/issues
+
+=cut
+
 use Moose::Role;
 use Tie::IxHash;
 use Carp qw( croak );
@@ -9,13 +99,16 @@ use Moose::Util::TypeConstraints;
 use Module::Runtime qw( use_module );
 
 role_type 'SyForm::Field';
+role_type 'SyForm::Field::Verify';
 role_type 'SyForm::Values';
 role_type 'SyForm::Results';
 role_type 'SyForm::View';
 role_type 'SyForm::ViewField';
 
 use SyForm::Exception;
-use namespace::autoclean;
+use namespace::clean -except => 'meta';
+
+require SyForm::Field::Verify;
 
 with qw(
   MooseX::Traits
@@ -38,9 +131,7 @@ our %default_field_roles_by_arg = (
   label => 'SyForm::Field::Label',
   html => 'SyForm::Field::HTML',
   readonly => 'SyForm::Field::Readonly',
-  (map { $_ => 'SyForm::Field::Verify' } qw(
-    required type filters
-  )),
+  (map { $_ => 'SyForm::Field::Verify' } @SyForm::Field::Verify::validation_class_directives),
 );
 
 our %default_form_roles_by_field_arg = (
@@ -272,93 +363,3 @@ sub throw {
 }
 
 1;
-
-=encoding utf8
-
-=head1 SYNOPSIS
-
-  use SyForm;
-
-  my $form = SyForm->create([
-    'username' => {
-      isa => 'Str',
-      required => 1,
-      label => 'Your name',
-    },
-    'age' => {
-      isa => 'Int',
-      label => 'Your age',
-    },
-    'unchecked' => {
-      label => 'Unchecked',
-    },
-  ]);
-
-  $form->does('SyForm'); # its all roles
-  $form->field('username')->does('SyForm::Field');
-  $form->field('username')->does('SyForm::Field::Label');
-  $form->field('username')->does('SyForm::Field::Verify');
-
-  # Roles are only automatically loaded on requirement
-  !$form->field('unchecked')->does('SyForm::Field::Verify');
-
-  my $view = $form->process( username => 'YoCoolCopKiller', age => 13 );
-
-  # or ...
-  # $values = $form->process_values(%args);
-  # my $value = $values->value;
-  # !$values->can('success'); # values are only the input
-  # $results = $form->process_results(%args);
-  # my $result = $results->get_result('username');
-  # my $value = $results->values->get_value('username');
-  # my $success = $result->success # result is after check
-
-  for my $field_name (@{$view->field_names}) {
-    my $input_value = $view->field($field_name)->value;
-    if ($view->success) {
-      my $verified_result = $view->field($field_name)->result;  
-    } else {
-      # result is filled for all valid fields, even on invalid form
-      my $verified_result_if_exist = $view->field($field_name)->result;
-    }
-    # for access to the main SyForm::Field of the view field
-    my $syform_field = $view->field($field_name)->field;
-  }
-
-=head1 DESCRIPTION
-
-SyForm is developed for L<SyContent|https://sycontent.de/>.
-
-L<SyForm> has many L<SyForm::Field>. You get a form object with calling
-B<create([@fields], %form_args)> on L<SyForm>.
-
-With L<SyForm::Process> (automatically added) you can give it L<process_args>
-via calling of L<process(%args)> on your form object that you get from the
-create.
-
-This call to process creates internally a L<SyForm::Values> out of the process
-args together with the help of the fields. Those again use this to produce a
-L<SyForm::Results> with the final results of the process.
-
-Those end up in a L<SyForm::View> together with a L<SyForm::ViewField> for
-every L<SyForm::Field> that is used in the process flow. The view field allows
-easy access to the L<SyForm::Values> values, the L<SyForm::Results> results
-and the actually L<SyForm::Field> definition, to get a complete access of
-all variables in the rendering.
-
-=head1 SUPPORT
-
-IRC
-
-  Join #sycontent on irc.perl.org. Highlight Getty for fast reaction :).
-
-Repository
-
-  http://github.com/SyContent/SyForm
-  Pull request and additional contributors are welcome
- 
-Issue Tracker
-
-  http://github.com/SyContent/SyForm/issues
-
-

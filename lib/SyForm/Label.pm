@@ -2,7 +2,7 @@ package SyForm::Label;
 # ABSTRACT: A label for a form
 
 use Moose::Role;
-use namespace::autoclean;
+use namespace::clean;
 
 has label => (
   is => 'ro',

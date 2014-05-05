@@ -2,7 +2,7 @@ package SyForm::Verify;
 # ABSTRACT: Main verification logic
 
 use Moose::Role;
-use namespace::autoclean;
+use namespace::clean -except => 'meta';
 
 has verify_without_errors => (
   is => 'ro',

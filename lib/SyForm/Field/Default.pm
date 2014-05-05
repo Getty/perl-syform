@@ -2,7 +2,7 @@ package SyForm::Field::Default;
 # ABSTRACT: A default for a field
 
 use Moose::Role;
-use namespace::autoclean;
+use namespace::clean;
 
 has default => (
   is => 'ro',

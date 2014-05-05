@@ -28,9 +28,6 @@ my $result = $form->process_results( test => 12, ignored => 2 );
 ok($result->does('SyForm::Results'),'Result is SyForm::Results');
 is($result->get_result('test'),12,'Result of test is fine');
 is_deeply($result->as_hashref,{ test => 12 },'Result as hash is fine');
-# TODO
-# my %result_hash = %{$result};
-# is_deeply({ %result_hash },{ test => 12 },'Result as hash is fine');
 
 my $form2 = SyForm->create([
   'test' => {},

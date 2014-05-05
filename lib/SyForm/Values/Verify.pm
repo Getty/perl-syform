@@ -2,48 +2,60 @@ package SyForm::Values::Verify;
 # ABSTRACT:
 
 use Moose::Role;
-use Data::Verifier;
-use namespace::autoclean;
+use Validation::Class::Simple;
+use namespace::clean;
 
 around create_results => sub {
   my ( $orig, $self, %args ) = @_;
-  my $no_success = exists $args{success} && !$args{success} ? 1 : 0;
-  my $verify_results = $self->verify_values($self);
-  for my $field (@{$self->syform->verify_process_fields}) {
-    if ($verify_results->is_invalid($field->name)) {
-      unless ($field->no_delete_on_invalid_result) {
-        delete $args{$field->name} if exists $args{$field->name};
+  my $no_success = (exists $args{success} && !$args{success}) ? 1 : 0;
+  my $validation_class = $self->verify_values($self);
+  my @vals = $validation_class->fields->values;
+  for my $validation_field ($validation_class->fields->values) {
+    my $field_name = $validation_field->name;
+    if (!$validation_class->validate($field_name)) {
+      unless ($self->syform->field($field_name)->no_delete_on_invalid_result) {
+        delete $args{$field_name} if exists $args{$field_name};
       }
-    } elsif (exists $args{$field->name}) {
-      my $verified_value = $verify_results->get_value($field->name);
-      $args{$field->name} = $verified_value;
+    } elsif (exists $args{$field_name}) {
+      my ( $verified_value ) = $validation_class->get_values($field_name);
+      $args{$field_name} = $verified_value;
     }
   }
-  $args{success} = $no_success ? 0 : $verify_results->success ? 1 : 0; 
-  $args{verify_results} = $verify_results;
+  my $validation_success = $validation_class->validate;
+  $args{success} = $no_success ? 0 : $validation_success ? 1 : 0; 
+  $args{validation_class} = $validation_class;
   return $self->$orig(%args);
 };
 
+# extra function to make it overrideable for other roles to limit
+# functionality of this module
+sub validation_class_directives {
+  @SyForm::Field::Verify::validation_class_directives
+}
+
 sub verify_values {
   my ( $self, $values ) = @_;
-  my %profile;
+  my %validation_fields;
+  my %params;
   for my $field (@{$self->syform->verify_process_fields}) {
     my $name = $field->name;
     my %args;
-    if ($field->does('SyForm::Field::Verify')) {
-      $args{required} = $field->required if $field->has_required;
-      $args{type} = $field->type if $field->type;
-      $args{filters} = $field->verify_filters if $field->has_verify_filters;
+    for ($self->validation_class_directives) {
+      my $has = 'has_'.$_;
+      $args{$_} = $field->$_ if $field->$has;
     }
     if (%args) {
-      $profile{$name} = { %args };
+      $validation_fields{$name} = { %args };
+      $params{$name} = $values->get_value($name)
+        if $values->has_value($name) || $field->required;
+      # required case, cause Validate::Class doesnt really
+      # check for required if the params doesnt exist. 
     }
   }
-  my $dv = Data::Verifier->new(
-    $self->syform->has_verify_filters ? ( filters => $self->syform->verify_filters ) : (),
-    profile => { %profile }
+  return Validation::Class::Simple->new(
+    fields => { %validation_fields },
+    params => { %params },
   );
-  return $dv->verify($values->as_hashref);
 };
 
 1;
