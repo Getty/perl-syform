@@ -1,9 +1,9 @@
 package SyForm::View::Success;
 # ABSTRACT: Fetching success value from SyForn::Results of give back true
 
-use Moose::Role;
-#use overload q{bool} => sub { $_[0]->success ? 1 : 0 }, fallback => 1;
+use MooseX::Role::WithOverloading;
 use namespace::clean -except => 'meta';
+use overload q{bool} => sub { $_[0]->success ? 1 : 0 }, fallback => 1;
 
 has success => (
   is => 'ro',

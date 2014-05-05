@@ -21,8 +21,10 @@ my $form = SyForm->create([
 ]);
 
 ok($form->does('SyForm'),'$form does SyForm');
-my $results = $form->process_results( require => 'something', reqint => 2 );
-#ok($results ? 1 : 0,'$results is bool success');
+my $view = $form->process( require => 'something', reqint => 2 );
+my $results = $view->results;
+ok($view ? 1 : 0,'$view is bool success');
+ok($results ? 1 : 0,'$results is bool success');
 ok($results->does('SyForm::Results'),'$results does SyForm::Results');
 ok($results->does('SyForm::Results::Success'),'$results does SyForm::Results::Success');
 ok($results->does('SyForm::Results::Verify'),'$results does SyForm::Results::Verify');
@@ -30,8 +32,10 @@ ok($results->success,'$results is a success');
 is($results->get_result('require'),'something','result is field with value');
 ok(!$results->has_result('integer'),'integer field has no result');
 is($results->get_result('reqint'),'2','result is field with value');
-my $emptyresults = $form->process_results();
-#ok($emptyresults ? 0 : 1,'$emptyresults is no bool success');
+my $emptyview = $form->process();
+my $emptyresults = $emptyview->results;
+ok($emptyview ? 0 : 1,'$emptyview is no bool success');
+ok($emptyresults ? 0 : 1,'$emptyresults is no bool success');
 ok(!$emptyresults->has_result('require'),'require field has no result');
 ok(!$emptyresults->has_result('integer'),'integer field has no result');
 ok(!$emptyresults->has_result('reqint'),'reqint field has no result');

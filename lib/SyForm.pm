@@ -1,5 +1,5 @@
 package SyForm;
-# ABSTRACT: A role driven, readonly attributes, form management
+# ABSTRACT: Easy role driven form management
 
 =encoding utf8
 
