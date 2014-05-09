@@ -27,48 +27,55 @@ sub _build_html_name {
   return $self->field->html_name;
 }
 
-has input_attrs => (
+has html_inputs => (
   is => 'rw',
   isa => 'ArrayRef[Str|HashRef[Str]]',
   lazy_build => 1,
 );
 
-sub _build_input_attrs {
+sub _build_html_inputs {
   my ( $self ) = @_;
   my $html_tag;
   my $html = $self->html;
-  my %custom_args = %{$self->field->custom_input_attrs};
-  $html = delete $custom_args{html} if defined $custom_args{html};
-  $custom_args{name} = $self->html_name
-    unless defined $custom_args{name};
+  my %args = %{$self->field->custom_html_input_attributes};
+  $html = delete $args{html} if defined $args{html};
+  $args{name} = $self->html_name
+    unless defined $args{name};
   my $has_result = $self->has_result;
   if ($html eq 'text') {
     $html_tag = 'input';
-    if ($has_result) {
-      $custom_args{value} = $self->result;
-    }
-    $custom_args{type} = 'text' unless defined $custom_args{type};
+    $args{value} = $self->result if $has_result;
+    $args{type} = 'text' unless defined $args{type};
   } elsif ($html eq 'hidden') {
     $html_tag = 'input';
-    if ($has_result) {
-      $custom_args{value} = $self->result;
-    }
-    $custom_args{type} = 'hidden' unless defined $custom_args{type};
+    $args{value} = $self->result if $has_result;
+    $args{type} = 'hidden' unless defined $args{type};
+  } elsif ($html eq 'checkbox') {
+    $html_tag = 'input';
+    $args{checked} = 'checked' if $has_result && $self->result;
+    $args{type} = 'checkbox' unless defined $args{type};
   } elsif ($html eq 'textarea') {
     $html_tag = 'textarea';
-    if ($has_result) {
-      $custom_args{text_node} = $self->result;
-    }
-    $custom_args{close_tag} = 1 unless defined $custom_args{close_tag};
+    $args{text_node} = $self->result if $has_result;
+    $args{close_tag} = 1 unless defined $args{close_tag};
   }
-  $html_tag = $custom_args{html_tag} if defined $custom_args{html_tag};
-  return [ $html_tag, { %custom_args } ];
+  if ($self->syform->with_id and !defined $args{id}) {
+    $args{id} = $args{name};
+  }
+  $html_tag = $args{html_tag} if defined $args{html_tag};
+  return [ $html_tag, { %args } ];
 }
 
-sub render {
+has render => (
+  is => 'ro',
+  isa => 'Str',
+  lazy_build => 1,
+);
+
+sub _build_render {
   my ( $self ) = @_;
   my $html = "";
-  my $it = natatime 2, @{$self->input_attrs};
+  my $it = natatime 2, @{$self->html_inputs};
   while (my ( $html_tag, $html_args ) = $it->()) {
     my $close_tag = defined $html_args->{close_tag}
       ? delete $html_args->{close_tag} : 0;

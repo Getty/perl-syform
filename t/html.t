@@ -25,6 +25,10 @@ my $form = SyForm->create([
   'hidden' => {
     html => 'hidden',
   },
+  'checkbox' => {
+    label => 'Check the checkbox',
+    html => 'checkbox',
+  },
 #   'readonly' => {
 #     label => 'My Text',
 #     html => 'text',
@@ -61,16 +65,18 @@ is($hidden_field->html,'hidden','Hidden field gives back correct html');
 ok(my $view = $form->process(
   textwithval => 'val',
   textareawithval => 'more val'."\n".'and a new line',
+  checkbox => 1,
 ),'$view is success');
 
 ok($view->does('SyForm::View::HTML'),'view has html role loaded');
-is($view->render,'<form>
-<input name="text" type="text">
-<input name="textwithval" type="text" value="val">
-<textarea name="textarea"></textarea>
-<textarea name="textareawithval">more val
+is($view->render,'<form method="POST">
+<label for="text">My Text</label><input id="text" name="text" type="text">
+<label for="textwithval">My Text with Value</label><input id="textwithval" name="textwithval" type="text" value="val">
+<label for="textarea">My Textarea</label><textarea id="textarea" name="textarea"></textarea>
+<label for="textareawithval">My Textarea with Value</label><textarea id="textareawithval" name="textareawithval">more val
 and a new line</textarea>
-<input name="hidden" type="hidden">
+<input id="hidden" name="hidden" type="hidden">
+<label for="checkbox">Check the checkbox</label><input checked="checked" id="checkbox" name="checkbox" type="checkbox">
 </form>','HTML is fine');
 
 done_testing;

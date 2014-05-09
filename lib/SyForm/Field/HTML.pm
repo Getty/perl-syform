@@ -10,7 +10,7 @@ has html => (
   required => 1,
 );
 
-has custom_input_attrs => (
+has custom_html_input_attributes => (
   is => 'rw',
   isa => 'HashRef[Str]',
   default => sub {{}},
