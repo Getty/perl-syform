@@ -6,7 +6,7 @@ use List::MoreUtils qw( natatime );
 use namespace::clean -except => 'meta';
 
 has html => (
-  is => 'rw',
+  is => 'ro',
   isa => 'Str',
   lazy_build => 1,
 );
@@ -17,7 +17,7 @@ sub _build_html {
 }
 
 has html_name => (
-  is => 'rw',
+  is => 'ro',
   isa => 'Str',
   lazy_build => 1,
 );
@@ -27,17 +27,28 @@ sub _build_html_name {
   return $self->field->html_name;
 }
 
-has html_inputs => (
-  is => 'rw',
+has html_input_attributes => (
+  is => 'ro',
+  isa => 'HashRef',
+  lazy_build => 1,
+);
+
+sub _build_html_input_attributes {
+  my ( $self ) = @_;
+  return $self->field->html_attributes;
+}
+
+has html_input_fields => (
+  is => 'ro',
   isa => 'ArrayRef[Str|HashRef[Str]]',
   lazy_build => 1,
 );
 
-sub _build_html_inputs {
+sub _build_html_input_fields {
   my ( $self ) = @_;
   my $html_tag;
   my $html = $self->html;
-  my %args = %{$self->field->custom_html_input_attributes};
+  my %args = %{$self->html_input_attributes};
   $html = delete $args{html} if defined $args{html};
   $args{name} = $self->html_name
     unless defined $args{name};
@@ -46,6 +57,9 @@ sub _build_html_inputs {
     $html_tag = 'input';
     $args{value} = $self->result if $has_result;
     $args{type} = 'text' unless defined $args{type};
+  } elsif ($html eq 'password') {
+    $html_tag = 'input';
+    $args{type} = 'password' unless defined $args{type};
   } elsif ($html eq 'hidden') {
     $html_tag = 'input';
     $args{value} = $self->result if $has_result;
@@ -66,17 +80,29 @@ sub _build_html_inputs {
   return [ $html_tag, { %args } ];
 }
 
-has render => (
+has html_input => (
   is => 'ro',
   isa => 'Str',
   lazy_build => 1,
 );
 
-sub _build_render {
+sub _build_html_input {
   my ( $self ) = @_;
-  my $html = "";
-  my $it = natatime 2, @{$self->html_inputs};
+  return join("\n",@{$self->html_inputs});
+}
+
+has html_inputs => (
+  is => 'ro',
+  isa => 'ArrayRef[Str]',
+  lazy_build => 1,
+);
+
+sub _build_html_inputs {
+  my ( $self ) = @_;
+  my @html_inputs;
+  my $it = natatime 2, @{$self->html_input_fields};
   while (my ( $html_tag, $html_args ) = $it->()) {
+    my $html = "";
     my $close_tag = defined $html_args->{close_tag}
       ? delete $html_args->{close_tag} : 0;
     my $text_node;
@@ -100,8 +126,23 @@ sub _build_render {
       $html .= '</'.$html_tag.'>';
     }
     $html .= "\n";
+    push @html_inputs, $html;
   }
-  return $html;
+  return [ @html_inputs ];
+}
+
+has render => (
+  is => 'ro',
+  isa => 'Str',
+  lazy_build => 1,
+);
+
+sub _build_render {
+  my ( $self ) = @_;
+  if ($self->does('SyForm::ViewField::Label')) {
+    return ($self->html_label).($self->html_input);
+  }
+  return $self->html_input;
 }
 
 1;

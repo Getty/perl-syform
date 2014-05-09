@@ -14,4 +14,15 @@ around render => sub {
   return $html;
 };
 
+around _build_html_input_attributes => sub {
+  my ( $orig, $self ) = @_;
+  my %attrs = %{$self->$orig};
+  if (defined $attrs{class}) {
+    $attrs{class} .= ' form-control';
+  } else {
+    $attrs{class} = 'form-control';    
+  }
+  return { %attrs };
+};
+
 1;

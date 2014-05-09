@@ -4,20 +4,38 @@ package SyForm::HTML;
 use Moose::Role;
 use namespace::clean -except => 'meta';
 
-has custom_html_attributes => (
-  is => 'rw',
+has html_attributes => (
+  is => 'ro',
   isa => 'HashRef[Str]',
   default => sub {{}},
 );
 
+has html_input_attributes => (
+  is => 'ro',
+  isa => 'HashRef[Str]',
+  default => sub {{}},
+);
+
+has submit_attributes => (
+  is => 'ro',
+  isa => 'HashRef[Str]',
+  default => sub {{}},
+);
+
+has submit_html_tag => (
+  is => 'ro',
+  isa => 'Str',
+  default => sub { 'input' },
+);
+
 has method => (
-  is => 'rw',
+  is => 'ro',
   isa => 'Str',
   default => sub { 'POST' },
 );
 
 has with_id => (
-  is => 'rw',
+  is => 'ro',
   isa => 'Bool',
   default => sub { 1 },
 );

@@ -23,7 +23,7 @@ sub _build_render {
 }
 
 has form_open => (
-  is => 'rw',
+  is => 'ro',
   isa => 'Str',
   lazy_build => 1,
 );
@@ -44,7 +44,7 @@ sub _build_form_open {
 }
 
 has form_close => (
-  is => 'rw',
+  is => 'ro',
   isa => 'Str',
   lazy_build => 1,
 );
@@ -55,16 +55,40 @@ sub _build_form_close {
 }
 
 has html_attributes => (
-  is => 'rw',
+  is => 'ro',
   isa => 'HashRef',
   lazy_build => 1,
 );
 
 sub _build_html_attributes {
   my ( $self ) = @_;
-  my %args = %{$self->syform->custom_html_attributes};
+  my %args = %{$self->syform->html_attributes};
   $args{method} = $self->syform->method unless defined $args{method};
   return { %args };
+}
+
+has submit => (
+  is => 'ro',
+  isa => 'Str',
+  lazy_build => 1,
+);
+
+sub _build_submit {
+  my ( $self ) = @_;
+  return '<input type="submit">'
+}
+
+has submit_attributes => (
+  is => 'ro',
+  isa => 'HashRef',
+  lazy_build => 1,
+);
+
+sub _build_submit_attributes {
+  my ( $self ) = @_;
+  my %attributes = %{$self->syform->submit_attributes};
+  $attributes{html_tag} = $self->syform->submit_html_tag unless defined $attributes{html_tag};
+  return { %attributes };
 }
 
 1;

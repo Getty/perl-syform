@@ -10,11 +10,16 @@ has html => (
   required => 1,
 );
 
-has custom_html_input_attributes => (
+has html_attributes => (
   is => 'rw',
   isa => 'HashRef[Str]',
-  default => sub {{}},
+  lazy_build => 1,
 );
+
+sub _build_html_attributes {
+  my ( $self ) = @_;
+  return {};
+}
 
 around viewfield_roles_by_results => sub {
   my ( $orig, $self, $results ) = @_;

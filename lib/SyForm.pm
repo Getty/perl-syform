@@ -57,6 +57,12 @@ package SyForm;
 
   $view->render; # get HTML
 
+  my $bs_form = SyForm->create( Bootstrap => [
+    # form fields like above
+  ]);
+
+  $bs_form->render; # Bootstrap HTML
+
 =head1 DESCRIPTION
 
 SyForm is developed for L<SyContent|https://sycontent.de/>.

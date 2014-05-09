@@ -7,8 +7,13 @@ use namespace::clean -except => 'meta';
 has label => (
   is => 'ro',
   isa => 'Str',
-  predicate => 'has_label',
+  lazy_build => 1,
 );
+
+sub _build_label {
+  my ( $self ) = @_;
+  return ucfirst($self->name);
+}
 
 around viewfield_roles_by_results => sub {
   my ( $orig, $self, $results ) = @_;
