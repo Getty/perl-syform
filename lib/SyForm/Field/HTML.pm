@@ -10,15 +10,26 @@ has html => (
   required => 1,
 );
 
-has input_attrs => (
+has custom_input_attrs => (
   is => 'rw',
-  isa => 'HashRef[Str|ArrayRef[Str]]',
+  isa => 'HashRef[Str]',
+  default => sub {{}},
+);
+
+around viewfield_roles_by_results => sub {
+  my ( $orig, $self, $results ) = @_;
+  return $self->$orig($results), qw( SyForm::ViewField::HTML );
+};
+
+has html_name => (
+  is => 'rw',
+  isa => 'Str',
   lazy_build => 1,
 );
 
-sub _build_input_attrs {
-  my ( $self ) = @_; 
-  return {};
+sub _build_html_name {
+  my ( $self ) = @_;
+  return $self->name;
 }
 
 1;

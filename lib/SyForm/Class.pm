@@ -25,6 +25,20 @@ use namespace::clean -except => 'meta';
     MyApp::SyForm::ValuesRole
   );
 
+  results_roles qw(
+    MyApp::SyForm::ResultsRole
+  );
+
+  view_roles qw(
+    MyApp::SyForm::ViewRole
+  );
+
+  viewfield_roles 
+    username => [qw( MyApp::SyForm::ViewFieldRoleForUsername )],
+    age => [qw( MyApp::SyForm::ViewFieldRoleForAge )];
+
+  viewfield_roles_for_all qw( MyApp::SyForm::ViewFieldRole );
+
   # Results roles are given via Values role
   # and View roles are given via Results role
   # ViewField roles are given via Field role
@@ -33,6 +47,9 @@ use namespace::clean -except => 'meta';
   # use roles for this, please.
   # values_class qw( MyApp::SyForm::Values );
   # field_class qw( MyApp::SyForm::Field );
+
+  # If you dont want Moose::Object as base for all of that
+  object_class 'MyApp::Object';
 
   field username => (
     required => 1,

@@ -142,8 +142,6 @@ sub _build_results_roles {[]}
 
 sub process_results {
   my ( $self, %args ) = @_;
-  my $results;
-  my $results_as_hashref = delete $args{results_as_hashref};
   my $values = $self->process_values(%args);
   return $values->results;
 }
@@ -164,7 +162,6 @@ sub _build_view_roles {[]}
 
 sub process_view {
   my ( $self, %args ) = @_;
-  my $view;
   my $results = $self->process_results(%args);
   return $results->view;
 }

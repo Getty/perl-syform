@@ -23,12 +23,21 @@ has results => (
 #
 #############
 
+has viewfield_roles_for_all => (
+  isa => 'ArrayRef[Str]',
+  is => 'ro',
+  lazy_build => 1,
+);
+
+sub _build_viewfield_roles_for_all {[]}
+
 has viewfield_roles => (
   isa => 'HashRef[Str|ArrayRef[Str]]',
   is => 'ro',
-  lazy => 1,
-  default => sub {{}},
+  lazy_build => 1,
 );
+
+sub _build_viewfield_roles {{}}
 
 has viewfield_role => (
   isa => 'Str',
@@ -97,8 +106,9 @@ sub _build_fields {
   my %fields;
   for my $field ($self->syform->fields->Values) {
     my %viewfield_args = $field->viewfield_args_by_results($self->results);
-    my @traits = defined $viewfield_roles{$field->name}
-      ? (@{$viewfield_roles{$field->name}}) : ();
+    my @traits = @{$self->viewfield_roles_for_all};
+    push @traits, @{$viewfield_roles{$field->name}}
+      if defined $viewfield_roles{$field->name};
     push @traits, @{delete $viewfield_args{roles}}
         if defined $viewfield_args{roles};
     $fields{$field->name} = $self->create_viewfield($field,
@@ -119,11 +129,5 @@ sub create_viewfield {
     %args,
   });
 }
-
-############
-#
-# ViewField
-#
-############
 
 1;

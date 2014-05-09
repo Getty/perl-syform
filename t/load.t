@@ -5,6 +5,7 @@ use Test::More;
 
 for (qw(
   SyForm
+  SyForm::Bootstrap
   SyForm::Class
   SyForm::Exception
   SyForm::Exception::Role::WithCreateArgs
@@ -30,6 +31,7 @@ for (qw(
   SyForm::Field::Process
   SyForm::Fields
   SyForm::Field::Verify
+  SyForm::HTML
   SyForm::Label
   SyForm::Meta::Attribute::Field
   SyForm::Object
@@ -43,8 +45,13 @@ for (qw(
   SyForm::Values::Verify
   SyForm::Verify
   SyForm::View
+  SyForm::View::Bootstrap
   SyForm::ViewField
+  SyForm::ViewField::Bootstrap
+  SyForm::ViewField::HTML
+  SyForm::ViewField::Label
   SyForm::ViewField::Verify
+  SyForm::View::HTML
   SyForm::View::Object
   SyForm::View::Success
   SyForm::View::Verify

@@ -10,4 +10,9 @@ has label => (
   predicate => 'has_label',
 );
 
+around viewfield_roles_by_results => sub {
+  my ( $orig, $self, $results ) = @_;
+  return $self->$orig($results), qw( SyForm::ViewField::Label );
+};
+
 1;
