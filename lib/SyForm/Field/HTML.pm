@@ -5,20 +5,30 @@ use Moose::Role;
 use namespace::clean -except => 'meta';
 
 has html => (
-  is => 'rw',
+  is => 'ro',
   isa => 'Str',
   required => 1,
 );
 
+has placeholder => (
+  is => 'ro',
+  isa => 'Str',
+  predicate => 'has_placeholder',
+);
+
 has html_attributes => (
-  is => 'rw',
+  is => 'ro',
   isa => 'HashRef[Str]',
   lazy_build => 1,
 );
 
 sub _build_html_attributes {
   my ( $self ) = @_;
-  return {};
+  return {
+    $self->has_placeholder ? (
+      placeholder => $self->placeholder,
+    ) : (),
+  };
 }
 
 around viewfield_roles_by_results => sub {
@@ -27,7 +37,7 @@ around viewfield_roles_by_results => sub {
 };
 
 has html_name => (
-  is => 'rw',
+  is => 'ro',
   isa => 'Str',
   lazy_build => 1,
 );

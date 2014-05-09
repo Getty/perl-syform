@@ -12,7 +12,7 @@ with qw(
 
 has syform => (
   is => 'ro',
-  isa => 'SyForm',
+  does => 'SyForm',
   required => 1,
   handles => [qw(
     field
