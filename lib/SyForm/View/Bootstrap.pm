@@ -25,4 +25,19 @@ around _build_html_attributes => sub {
   return { %html_attributes };
 };
 
+around _build_submit_attributes => sub {
+  my ( $orig, $self ) = @_;
+  my %submit_attributes = %{$self->$orig};
+  my $button_class = 'btn btn-'.$self->syform->bootstrap_submit_option;
+  if ($self->syform->has_bootstrap_submit_size) {
+    $button_class .= ' btn-'.$self->syform->bootstrap_submit_size;
+  }
+  if (defined $submit_attributes{class}) {
+    $submit_attributes{class} = $button_class." ".$submit_attributes{class};
+  } else {
+    $submit_attributes{class} = $button_class;
+  }
+  return { %submit_attributes };
+};
+
 1;

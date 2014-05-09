@@ -77,6 +77,7 @@ is($view->render,'<form method="POST">
 and a new line</textarea>
 <input id="hidden" name="hidden" type="hidden">
 <label for="checkbox">Check the checkbox</label><input checked="checked" id="checkbox" name="checkbox" type="checkbox">
+<input type="submit" value="Submit">
 </form>','HTML is fine');
 
 done_testing;

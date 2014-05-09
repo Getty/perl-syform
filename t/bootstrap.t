@@ -65,6 +65,7 @@ and a new line</textarea>
 <div class="form-group">
   <label for="checkbox">Check the checkbox</label><input checked="checked" class="form-control" id="checkbox" name="checkbox" type="checkbox">
 </div>
-</form>','HTML is fine');
+<input class="btn btn-default" type="submit" value="Submit">
+</form>','Bootstrap HTML is fine');
 
 done_testing;

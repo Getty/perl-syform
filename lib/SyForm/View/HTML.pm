@@ -18,6 +18,7 @@ sub _build_render {
       $html .= $self->fields->{$key}->render;
     }
   }
+  $html .= $self->submit;
   $html .= $self->form_close;
   return $html;
 }
@@ -75,7 +76,19 @@ has submit => (
 
 sub _build_submit {
   my ( $self ) = @_;
-  return '<input type="submit">'
+  my %attributes = %{$self->submit_attributes};
+  my $html_tag = delete $attributes{html_tag};
+  my $submit = '<'.$html_tag;
+  if (scalar keys %attributes) {
+    my @attrs;
+    for my $key (sort { $a cmp $b } keys %attributes) {
+      my $value = $attributes{$key};
+      push @attrs, $key.'="'.$value.'"';
+    }
+    $submit .= " ".join(" ",@attrs);
+  }
+  $submit .= '>'."\n";
+  return $submit;
 }
 
 has submit_attributes => (
@@ -86,9 +99,15 @@ has submit_attributes => (
 
 sub _build_submit_attributes {
   my ( $self ) = @_;
-  my %attributes = %{$self->syform->submit_attributes};
-  $attributes{html_tag} = $self->syform->submit_html_tag unless defined $attributes{html_tag};
-  return { %attributes };
+  return {
+    html_tag => $self->syform->submit_html_tag,
+    type => 'submit',
+    value => $self->syform->submit_value,
+    $self->syform->has_name ? (
+      name => 'submit_'.$self->syform->name,
+    ) : (),
+    %{$self->syform->submit_attributes}
+  };
 }
 
 1;

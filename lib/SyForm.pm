@@ -159,15 +159,11 @@ our %default_form_roles_by_field_arg = (
 
 #######################
 
-{
-  my $NAME_SERIAL = 0;
-  has name => (
-    isa => 'Str',
-    is => 'ro',
-    lazy_build => 1,
-  );
-  sub _build_name { sprintf("%d%06d",$NAME_SERIAL++,$$) }
-}
+has name => (
+  isa => 'Str',
+  is => 'ro',
+  predicate => 'has_name',
+);
 
 has fields => (
   isa => 'Tie::IxHash',

@@ -28,6 +28,12 @@ has submit_html_tag => (
   default => sub { 'input' },
 );
 
+has submit_value => (
+  is => 'ro',
+  isa => 'Str',
+  default => sub { 'Submit' },
+);
+
 has method => (
   is => 'ro',
   isa => 'Str',
