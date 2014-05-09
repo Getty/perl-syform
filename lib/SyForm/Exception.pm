@@ -7,7 +7,7 @@ extends 'Throwable::Error';
 around throw => sub {
   my ( $orig, $class, $message, %args ) = @_;
   $class->$orig({
-    message => '[SyForm Exception] '.$message, %args
+    message => "\n".'[SyForm Exception] '.$message, %args
   });
 };
 

@@ -16,4 +16,9 @@ my $error3 = $@;
 isa_ok($error3,'SyForm::Exception::UnexpectedArgToCreate','$error3');
 is($error3->error_ref,'HASH','$error3->error_ref is correct');
 
+eval { my $form4 = SyForm->create([ test => { html => 'text', label => 'bla' } ], need_submit => 1 ) };
+my $error4 = $@;
+isa_ok($error4,'SyForm::Exception::NeedSubmitRequiresFormName','$error4');
+ok($error4->syform->does('SyForm'),'$error4->syform is a syform');
+
 done_testing;

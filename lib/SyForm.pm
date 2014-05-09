@@ -139,6 +139,7 @@ our $default_object_class = 'Moose::Object';
 our %default_form_roles_by_arg = (
   label => 'SyForm::Label',
   object => 'SyForm::Object',
+  need_submit => 'SyForm::HTML',
 );
 
 our %default_field_roles_by_arg = (
@@ -367,6 +368,7 @@ sub throw {
           ? ( object_class => $form_default_object_class ) : (),
         scalar @{$field_roles} ? ( field_roles => $field_roles ) : (),
         fields => [ @field_list_args ],
+        %args,
       );
     };
 
