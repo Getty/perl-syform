@@ -8,7 +8,6 @@ for (qw(
   SyForm::Bootstrap
   SyForm::Class
   SyForm::Exception
-  SyForm::Exception::NeedSubmitRequiresFormName
   SyForm::Exception::Role::WithCreateArgs
   SyForm::Exception::Role::WithOriginalError
   SyForm::Exception::Role::WithSyForm

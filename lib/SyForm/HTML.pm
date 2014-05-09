@@ -57,10 +57,4 @@ around view_roles => sub {
   return [ @{$self->$orig}, 'SyForm::View::HTML' ];
 };
 
-sub BUILD {
-  my ( $self ) = @_;
-  SyForm->throw( NeedSubmitRequiresFormName => $self )
-    if $self->need_submit and !$self->has_name;
-}
-
 1;
