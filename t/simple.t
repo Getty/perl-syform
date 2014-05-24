@@ -35,11 +35,11 @@ my $form2 = SyForm->create([
     label => 'Test Label',
   },
   'test3' => {
-#    label => 'Test Label',
-    no_process => 1,
+    label => 'Test Label',
+#    no_process => 1,
   },
   'test4' => {
-    no_process => 1,
+#    no_process => 1,
   },
 ]);
 
@@ -50,12 +50,11 @@ my $test2_field = $form2->field('test2');
 ok($test2_field->does('SyForm::Field::Label'),'label role loaded on 2nd field');
 ok($test2_field->does('SyForm::Field::Process'),'process role loaded on 2nd field');
 my $test3_field = $form2->field('test3');
-# TODO - label shouldnt need processing but view requires processing...
-#ok($test3_field->does('SyForm::Field::Label'),'label role loaded on 3rd field');
-ok(!$test3_field->does('SyForm::Field::Process'),'process role loaded on 3rd field');
+ok($test3_field->does('SyForm::Field::Label'),'label role loaded on 3rd field');
+ok($test3_field->does('SyForm::Field::Process'),'process role loaded on 3rd field');
 my $test4_field = $form2->field('test4');
 ok(!$test4_field->does('SyForm::Field::Label'),'label role not loaded on 4rd field');
-ok(!$test4_field->does('SyForm::Field::Process'),'process role loaded on 4rd field');
+ok($test4_field->does('SyForm::Field::Process'),'process role loaded on 4rd field');
 my $form2view = $form2->process( test2 => 'lalala' );
 ok($form2view->does('SyForm::View'),'$form2view does SyForm::View');
 my $result2 = $form2view->results();
@@ -64,7 +63,7 @@ is($result2->get_result('test2'),'lalala','Expected test2 result value');
 ok(!$result2->has_result('test'),'Has no test result value');
 ok($result2->does('SyForm::Results'),'Result is SyForm::Results');
 is_deeply($result2->field_names,[qw(
-  test test2
+  test test2 test3 test4
 )],'Field names are in correct order');
 
 my $result3 = SyForm->create([
@@ -80,7 +79,7 @@ my $result3 = SyForm->create([
 ])->process_results();
 
 is_deeply($result3->field_names,[qw(
-  test test2 test3 test5
+  test test2 test3 test4 test5
 )],'Other field names are also in correct order');
 
 done_testing;

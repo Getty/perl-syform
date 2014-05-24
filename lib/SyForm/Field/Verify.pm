@@ -4,36 +4,15 @@ package SyForm::Field::Verify;
 use Moose::Role;
 use namespace::clean -except => 'meta';
 
-our @validation_class_directives = qw(
+our @syccess_directives = qw(
   required
-  between
-  date
-  decimal
-  depends_on
-  email
-  error
-  hostname
+  is_number
+  in
   length
-  matches
-  time
-  options
-  pattern
-  messages
-  filters
-  readonly
-  max_alpha
-  max_digits
-  max_length
-  max_sum
-  max_symbols
-  min_alpha
-  min_digits
-  min_length
-  min_sum
-  min_symbols
+  regex
 );
 
-for (@validation_class_directives) {
+for (@syccess_directives) {
   has $_ => (
     is => 'ro',
     predicate => 'has_'.$_,
@@ -59,11 +38,6 @@ around results_roles_by_values => sub {
     SyForm::Results::Success
     SyForm::Results::Verify
   );
-};
-
-around viewfield_roles_by_results => sub {
-  my ( $orig, $self, $results ) = @_;
-  return $self->$orig($results), qw( SyForm::ViewField::Verify );
 };
 
 around view_roles_by_results => sub {

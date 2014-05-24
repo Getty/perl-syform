@@ -15,46 +15,38 @@ has view => (
   handles => [qw(
     viewfield
     results
-  )],
-);
-
-has field => (
-  is => 'ro',
-  isa => 'SyForm::Field',
-  required => 1,
-  handles => [qw(
     syform
   )],
 );
 
-sub has_value {
-  my ( $self ) = @_;
-  my $name = $self->field->name;
-  $self->results->values->has_value($name);
-}
+has name => (
+  is => 'ro',
+  isa => 'Str',
+  required => 1,
+);
 
-sub value {
-  my ( $self ) = @_;
-  my $name = $self->field->name;
-  $self->results->values->get_value($name);
-}
+has has_name => (
+  is => 'ro',
+  isa => 'Str',
+  lazy_build => 1,
+);
+sub _build_has_name { 'has_'.($_[0]->name) }
 
-sub has_result {
-  my ( $self ) = @_;
-  my $name = $self->field->name;
-  $self->results->has_result($name);
-}
+has value => (
+  is => 'ro',
+  predicate => 'has_value',
+);
 
-sub result {
-  my ( $self ) = @_;
-  my $name = $self->field->name;
-  $self->results->get_result($name);
-}
+has result => (
+  is => 'ro',
+  predicate => 'has_result',
+);
 
 sub val {
   my ( $self ) = @_;
   return $self->result if $self->has_result;
   return $self->value if $self->has_value;
+  return;
 }
 
 1;

@@ -4,9 +4,13 @@ package SyForm::Results::Verify;
 use Moose::Role;
 use namespace::clean -except => 'meta';
 
-has validation_class => (
+with qw(
+  SyForm::Results::Success
+);
+
+has syccess_result => (
   is => 'ro',
-  isa => 'Validation::Class::Simple',
+  isa => 'Syccess::Result',
   required => 1,
 );
 
@@ -18,7 +22,7 @@ has error_count => (
 
 sub _build_error_count {
   my ( $self ) = @_;
-  $self->validation_class->error_count;
+  $self->syccess_result->error_count;
 }
 
 1;

@@ -113,13 +113,13 @@ sub _build_view_roles {
   return $self->values->view_roles;
 }
 
-has _view_metaclass => (
+has view_metaclass => (
   isa => 'Moose::Meta::Class',
   is => 'ro',
   lazy_build => 1,
 );
 
-sub _build__view_metaclass {
+sub _build_view_metaclass {
   my ( $self ) = @_;
   return Moose::Meta::Class->create(
     (ref $self->syform).'::View',
@@ -136,7 +136,7 @@ has view_class => (
 
 sub _build_view_class {
   my ( $self ) = @_;
-  return $self->_view_metaclass->name;
+  return $self->view_metaclass->name;
 }
 
 1;

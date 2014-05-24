@@ -31,11 +31,6 @@ sub _build_html_attributes {
   };
 }
 
-around viewfield_roles_by_results => sub {
-  my ( $orig, $self, $results ) = @_;
-  return $self->$orig($results), qw( SyForm::ViewField::HTML );
-};
-
 has html_name => (
   is => 'ro',
   isa => 'Str',

@@ -84,9 +84,9 @@ easy access to the L<SyForm::Values> values, the L<SyForm::Results> results
 and the actually L<SyForm::Field> definition, to get a complete access of
 all variables in the rendering.
 
-For validation L<SyForm> implements L<Validation::Class> and so
-most of the directives available there are available in L<SyForm>.
-A complete list can be found at L<SyForm::Field::Verify>.
+For validation L<SyForm> implements L<Syccess> and so all of the
+directives available there are available in L<SyForm>. A complete list 
+can be found at L<SyForm::Field::Verify>.
 
 =head1 SUPPORT
 
@@ -155,7 +155,6 @@ our %default_form_roles_by_field_arg = (
     $default_field_roles_by_arg{$_} eq 'SyForm::Field::Verify'
   } keys %default_field_roles_by_arg),
   html => 'SyForm::HTML',
-  label => 'SyForm::Label',
 );
 
 #######################
@@ -166,6 +165,13 @@ has name => (
   predicate => 'has_name',
 );
 
+has fields_list => (
+  isa => 'ArrayRef[Str|HashRef]',
+  is => 'ro',
+  init_arg => 'fields',
+  required => 1,
+);
+
 has fields => (
   isa => 'Tie::IxHash',
   is => 'ro',
@@ -173,13 +179,6 @@ has fields => (
   lazy_build => 1,
 );
 sub field { shift->fields->FETCH(@_) }
-
-has fields_list => (
-  isa => 'ArrayRef[Str|HashRef]',
-  is => 'ro',
-  init_arg => 'fields',
-  required => 1,
-);
 
 sub _build_fields {
   my ( $self ) = @_;
@@ -206,8 +205,6 @@ sub create_field {
   my $field;
   my $class = delete $field_args{class} || $self->field_class;
   my $traits = delete $field_args{roles} || [];
-  unshift @{$traits}, $self->field_process_role
-    unless delete $field_args{no_process};
   push @{$traits}, @{$self->field_roles};
   for my $arg (keys %default_field_roles_by_arg) {
     if (exists $field_args{$arg}) {
@@ -236,20 +233,16 @@ has object_class => (
 );
 sub _build_object_class { $default_object_class }
 
-has field_process_role => (
-  isa => 'Str',
+has field_roles => (
+  isa => 'ArrayRef[Str]',
   is => 'ro',
   lazy_build => 1,
 );
 
-sub _build_field_process_role { 'SyForm::Field::Process' }
-
-has field_roles => (
-  isa => 'ArrayRef[Str]',
-  is => 'ro',
-  lazy => 1,
-  default => sub {[]},
-);
+sub _build_field_roles {
+  my ( $self ) = @_;
+  return [];
+}
 
 has field_class => (
   isa => 'Str',

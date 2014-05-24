@@ -15,9 +15,4 @@ sub _build_label {
   return ucfirst($self->name);
 }
 
-around viewfield_roles_by_results => sub {
-  my ( $orig, $self, $results ) = @_;
-  return $self->$orig($results), qw( SyForm::ViewField::Label );
-};
-
 1;

@@ -4,6 +4,10 @@ package SyForm::View::Verify;
 use Moose::Role;
 use namespace::clean -except => 'meta';
 
+with qw(
+  SyForm::View::Success
+);
+
 has error_count => (
   is => 'ro',
   isa => 'Int',

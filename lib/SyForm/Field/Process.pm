@@ -84,9 +84,18 @@ sub custom_view_args_by_results {
   return;
 }
 
+sub viewfield_fields_list_by_results {
+  my ( $self, $results ) = @_;
+  return $self->name, { $self->viewfield_args_by_results($results) };
+}
+
 sub viewfield_args_by_results {
   my ( $self, $results ) = @_;
-  return;
+  return 
+    $results->values->has_value($self->name)
+      ? ( value => $results->values->get_value($self->name) ) : (),
+    $results->has_result($self->name)
+      ? ( result => $results->get_result($self->name) ) : ();
 }
 
 sub view_roles_by_results {

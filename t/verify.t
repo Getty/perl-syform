@@ -36,6 +36,7 @@ my $emptyview = $form->process();
 my $emptyresults = $emptyview->results;
 ok($emptyview ? 0 : 1,'$emptyview is no bool success');
 ok($emptyresults ? 0 : 1,'$emptyresults is no bool success');
+exit;
 ok(!$emptyresults->has_result('require'),'require field has no result');
 ok(!$emptyresults->has_result('integer'),'integer field has no result');
 ok(!$emptyresults->has_result('reqint'),'reqint field has no result');

@@ -7,6 +7,20 @@ use Moose::Meta::Attribute;
 use List::MoreUtils qw( uniq );
 use namespace::clean;
 
+has field_process_role => (
+  isa => 'Str',
+  is => 'ro',
+  lazy_build => 1,
+);
+
+sub _build_field_process_role { 'SyForm::Field::Process' }
+
+around _build_field_roles => sub {
+  my ( $orig, $self ) = @_;
+  my @roles = @{$self->$orig};
+  return [ $self->field_process_role, @roles ];
+};
+
 #########
 #
 # Values

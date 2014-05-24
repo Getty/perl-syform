@@ -2,6 +2,7 @@ package SyForm::View;
 # ABSTRACT: Container for SyForm::Results and SyForm::ViewField
 
 use Moose::Role;
+use Tie::IxHash;
 use namespace::clean -except => 'meta';
 
 with qw(
@@ -30,14 +31,6 @@ has viewfield_roles_for_all => (
 );
 
 sub _build_viewfield_roles_for_all {[]}
-
-has viewfield_roles => (
-  isa => 'HashRef[Str|ArrayRef[Str]]',
-  is => 'ro',
-  lazy_build => 1,
-);
-
-sub _build_viewfield_roles {{}}
 
 has viewfield_role => (
   isa => 'Str',
@@ -89,34 +82,56 @@ has field_names => (
 
 sub _build_field_names {
   my ( $self ) = @_;
-  [map { $_->name } @{$self->fields}];
+  [map { $_->name } $self->fields->Values];
+}
+
+has fields_list => (
+  isa => 'ArrayRef[Str|HashRef]',
+  is => 'ro',
+  lazy_build => 1,
+);
+
+sub _build_fields_list {
+  my ( $self ) = @_;
+  my @list;
+  for my $field ($self->syform->fields->Values) {
+    if ($field->can('viewfield_fields_list_by_results')) {
+      my $field_list = Tie::IxHash->new($field->viewfield_fields_list_by_results($self->results));
+      for my $name ($field_list->Keys) {
+        my %args = %{$field_list->FETCH($name)};
+        $args{name} = $name;
+        push @list, $name, { %args };
+      }
+    }
+  }
+  return [ @list ];
 }
 
 has fields => (
   is => 'ro',
-  isa => 'HashRef[SyForm::ViewField]',
+  isa => 'Tie::IxHash',
   lazy_build => 1,
+  init_arg => undef,
 );
-sub field { shift->fields->{(shift)} }
-sub viewfield { shift->fields->{(shift)} }
+sub viewfields { shift->fields }
+sub field { shift->fields->FETCH(@_) }
+sub viewfield { shift->fields->FETCH(@_) }
 
 sub _build_fields {
   my ( $self ) = @_;
-  my %viewfield_roles = %{$self->viewfield_roles};
-  my %fields;
-  for my $field ($self->syform->fields->Values) {
-    my %viewfield_args = $field->viewfield_args_by_results($self->results);
-    my @traits = @{$self->viewfield_roles_for_all};
-    push @traits, @{$viewfield_roles{$field->name}}
-      if defined $viewfield_roles{$field->name};
-    push @traits, @{delete $viewfield_args{roles}}
-        if defined $viewfield_args{roles};
-    $fields{$field->name} = $self->create_viewfield($field,
-      field => $field,
-      roles => [ @traits ],
-    );
+  my @viewfield_roles_for_all = @{$self->viewfield_roles_for_all};
+  my $fields = Tie::IxHash->new;
+  my $fields_list = Tie::IxHash->new(@{$self->fields_list});
+  for my $name ($fields_list->Keys) {
+    my %viewfield_args = %{$fields_list->FETCH($name)};
+    $viewfield_args{roles} = defined $viewfield_args{roles}
+      ? [@{$viewfield_args{roles}},@viewfield_roles_for_all]
+      : [@viewfield_roles_for_all];
+    $fields->Push($name, $self->create_viewfield($name,
+      %viewfield_args,
+    ));
   }
-  return { %fields };
+  return $fields;
 }
 
 sub create_viewfield {
