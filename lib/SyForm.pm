@@ -145,7 +145,7 @@ our %default_form_roles_by_arg = (
 our %default_field_roles_by_arg = (
   default => 'SyForm::Field::Default',
   readonly => 'SyForm::Field::Readonly',
-  (map { $_ => 'SyForm::Field::Verify' } @SyForm::Field::Verify::validation_class_directives),
+  (map { $_ => 'SyForm::Field::Verify' } @SyForm::Field::Verify::syccess_directives),
   html => 'SyForm::Field::HTML',
   label => 'SyForm::Field::Label',
 );

@@ -9,8 +9,7 @@ around create_results => sub {
   my ( $orig, $self, %args ) = @_;
   my $no_success = (exists $args{success} && !$args{success}) ? 1 : 0;
   my $syccess_result = $self->verify_values($self);
-  my @vals = $syccess_result->fields;
-  for my $field (@{$syccess_result->verify_process_fields}) {
+  for my $field (@{$self->syform->verify_process_fields}) {
     my $field_name = $field->name;
     my @field_errors = @{$syccess_result->errors($field_name)};
     if (scalar @field_errors > 0) {
@@ -21,7 +20,7 @@ around create_results => sub {
   }
   my $validation_success = $syccess_result->success;
   $args{success} = $no_success ? 0 : $validation_success ? 1 : 0; 
-  $args{syccess} = $syccess;
+  $args{syccess_result} = $syccess_result;
   return $self->$orig(%args);
 };
 
@@ -49,8 +48,7 @@ sub verify_values {
   }
   return Syccess->new(
     fields => [ @fields ],
-    params => { %params },
-  );
+  )->validate( %params );
 };
 
 1;
