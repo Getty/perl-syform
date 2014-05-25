@@ -26,7 +26,6 @@ package SyForm;
 
   $form->does('SyForm'); # its all roles
   $form->field('username')->does('SyForm::Field');
-  $form->field('username')->does('SyForm::Field::Label');
   $form->field('username')->does('SyForm::Field::Verify');
 
   # Roles are only automatically loaded on requirement

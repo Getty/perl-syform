@@ -54,7 +54,6 @@ ok($hidden_field->does('SyForm::Field::HTML'),'html role loaded on Hidden field'
 is($hidden_field->html,'hidden','Hidden field gives back correct html');
 
 # my $readonly_field = $form->field('readonly');
-# ok($readonly_field->does('SyForm::Field::Label'),'label role loaded on Readonly field');
 # ok($readonly_field->does('SyForm::Field::Process'),'process role loaded on Readonly field');
 # ok($readonly_field->does('SyForm::Field::HTML'),'html role loaded on Readonly field');
 # is($readonly_field->html,'text','Readonly field gives back correct html');
