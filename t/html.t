@@ -79,6 +79,4 @@ like($html,qr{for="textarea"}i,'for textarea is found');
 like($html,qr{for="textareawithval"}i,'for textareawithval is found');
 like($html,qr{type="submit"}i,'Submit button found');
 
-use DDP; p($html);
-
 done_testing;
