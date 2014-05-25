@@ -16,13 +16,13 @@ has placeholder => (
   predicate => 'has_placeholder',
 );
 
-has html_attributes => (
+has html_input_attributes => (
   is => 'ro',
   isa => 'HashRef[Str]',
   lazy_build => 1,
 );
 
-sub _build_html_attributes {
+sub _build_html_input_attributes {
   my ( $self ) = @_;
   return {
     $self->has_placeholder ? (
@@ -40,6 +40,17 @@ has html_name => (
 sub _build_html_name {
   my ( $self ) = @_;
   return $self->name;
+}
+
+has html_id => (
+  is => 'ro',
+  isa => 'Str',
+  lazy_build => 1,
+);
+
+sub _build_html_id {
+  my ( $self ) = @_;
+  return $self->html_name;
 }
 
 1;

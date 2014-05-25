@@ -2,27 +2,21 @@ package SyForm::ViewField::Bootstrap;
 # ABSTRACT: SyForm::ViewField role for Bootstrap support
 
 use Moose::Role;
+use HTML::Declare ':all';
 use namespace::clean -except => 'meta';
 
-# workaround to be sure to be around label rendering, must add more
-# sorting of the roles... hmpf....
-around render => sub {
-  my ( $orig, $self ) = @_;
-  my $html = '<div class="form-group">'."\n";
-  $html .= '  '.$self->$orig;
-  $html .= '</div>'."\n";
-  return $html;
-};
+has bootstrap_render => (
+  is => 'ro',
+  isa => 'Str',
+  lazy_build => 1,
+);
 
-around _build_html_input_attributes => sub {
-  my ( $orig, $self ) = @_;
-  my %attrs = %{$self->$orig};
-  if (defined $attrs{class}) {
-    $attrs{class} .= ' form-control';
-  } else {
-    $attrs{class} = 'form-control';    
-  }
-  return { %attrs };
-};
+sub _build_bootstrap_render {
+  my ( $self ) = @_;
+  return DIV({
+    class => 'form-group',
+    _ => [ "\n", $self->html_label, "\n", $self->html_input ],
+  })->as_html;
+}
 
 1;

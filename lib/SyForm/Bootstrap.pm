@@ -4,6 +4,10 @@ package SyForm::Bootstrap;
 use Moose::Role;
 use namespace::clean -except => 'meta';
 
+with qw(
+  SyForm::HTML
+);
+
 has bootstrap_form => (
   is => 'ro',
   isa => 'Str',

@@ -28,4 +28,15 @@ has has_name => (
 );
 sub _build_has_name { 'has_'.($_[0]->name) }
 
+has label => (
+  is => 'ro',
+  isa => 'Str',
+  lazy_build => 1,
+);
+
+sub _build_label {
+  my ( $self ) = @_;
+  return ucfirst($self->name);
+}
+
 1;

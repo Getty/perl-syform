@@ -11,13 +11,14 @@ sub is_invalid {
 
 has is_valid => (
   is => 'ro',
-  isa => 'Int',
+  isa => 'Bool',
   lazy_build => 1,
 );
 
 sub _build_is_valid {
   my ( $self ) = @_;
-  return $self->results->validation_class->is_valid($self->name) ? 1 : 0;
+  my @errors = @{$self->errors};
+  return scalar @errors > 0 ? 0 : 1;
 }
 
 has errors => (
@@ -28,7 +29,7 @@ has errors => (
 
 sub _build_errors {
   my ( $self ) = @_;
-  return [ $self->results->validation_class->get_errors($self->name) ];
+  return $self->results->syccess_result->errors($self->name);
 }
 
 # sub has_original_value {

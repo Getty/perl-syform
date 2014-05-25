@@ -16,19 +16,19 @@ has html_input_attributes => (
   default => sub {{}},
 );
 
-has submit_attributes => (
+has html_form_attributes => (
   is => 'ro',
   isa => 'HashRef[Str]',
   default => sub {{}},
 );
 
-has submit_html_tag => (
+has html_submit_attributes => (
   is => 'ro',
-  isa => 'Str',
-  default => sub { 'input' },
+  isa => 'HashRef[Str]',
+  default => sub {{}},
 );
 
-has submit_value => (
+has html_submit_value => (
   is => 'ro',
   isa => 'Str',
   default => sub { 'Submit' },
@@ -36,20 +36,20 @@ has submit_value => (
 
 has need_submit => (
   is => 'ro',
-  isa => 'Str',
+  isa => 'Bool',
   default => sub { 0 },
 );
 
 has method => (
   is => 'ro',
   isa => 'Str',
-  default => sub { 'POST' },
+  default => sub { 'post' },
 );
 
-has with_id => (
+has action => (
   is => 'ro',
-  isa => 'Bool',
-  default => sub { 1 },
+  isa => 'Str',
+  predicate => 'has_action',
 );
 
 around view_roles => sub {

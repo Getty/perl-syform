@@ -127,7 +127,7 @@ sub _build_fields {
     $viewfield_args{roles} = defined $viewfield_args{roles}
       ? [@{$viewfield_args{roles}},@viewfield_roles_for_all]
       : [@viewfield_roles_for_all];
-    $fields->Push($name, $self->create_viewfield($name,
+    $fields->Push($name, $self->create_viewfield($self->syform->field($name),
       %viewfield_args,
     ));
   }

@@ -155,6 +155,7 @@ our %default_form_roles_by_field_arg = (
     $default_field_roles_by_arg{$_} eq 'SyForm::Field::Verify'
   } keys %default_field_roles_by_arg),
   html => 'SyForm::HTML',
+  bootstrap => 'SyForm::Bootstrap',
 );
 
 #######################

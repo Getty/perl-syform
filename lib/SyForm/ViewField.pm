@@ -8,6 +8,12 @@ with qw(
   MooseX::Traits
 );
 
+has field => (
+  is => 'ro',
+  does => 'SyForm::Field',
+  required => 1,
+);
+
 has view => (
   is => 'ro',
   isa => 'SyForm::View',
@@ -31,6 +37,17 @@ has has_name => (
   lazy_build => 1,
 );
 sub _build_has_name { 'has_'.($_[0]->name) }
+
+has label => (
+  is => 'ro',
+  isa => 'Str',
+  lazy_build => 1,
+);
+
+sub _build_label {
+  my ( $self ) = @_;
+  return $self->field->label;
+}
 
 has value => (
   is => 'ro',

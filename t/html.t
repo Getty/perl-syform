@@ -69,15 +69,16 @@ ok(my $view = $form->process(
 ),'$view is success');
 
 ok($view->does('SyForm::View::HTML'),'view has html role loaded');
-is($view->render,'<form method="POST">
-<label for="text">My Text</label><input id="text" name="text" type="text">
-<label for="textwithval">My Text with Value</label><input id="textwithval" name="textwithval" type="text" value="val">
-<label for="textarea">My Textarea</label><textarea id="textarea" name="textarea"></textarea>
-<label for="textareawithval">My Textarea with Value</label><textarea id="textareawithval" name="textareawithval">more val
-and a new line</textarea>
-<input id="hidden" name="hidden" type="hidden">
-<label for="checkbox">Check the checkbox</label><input checked="checked" id="checkbox" name="checkbox" type="checkbox">
-<input type="submit" value="Submit">
-</form>','HTML is fine');
+
+my $html = $view->html_render;
+like($html,qr{<form}i,'Starting form tag found');
+like($html,qr{method="POST"}i,'Starting method found');
+like($html,qr{for="text"}i,'for text is found');
+like($html,qr{for="textwithval"}i,'for textwithval is found');
+like($html,qr{for="textarea"}i,'for textarea is found');
+like($html,qr{for="textareawithval"}i,'for textareawithval is found');
+like($html,qr{type="submit"}i,'Submit button found');
+
+use DDP; p($html);
 
 done_testing;
