@@ -138,7 +138,6 @@ our $default_object_class = 'Moose::Object';
 our %default_form_roles_by_arg = (
   label => 'SyForm::Label',
   object => 'SyForm::Object',
-  need_submit => 'SyForm::HTML',
 );
 
 our %default_field_roles_by_arg = (
@@ -153,6 +152,7 @@ our %default_form_roles_by_field_arg = (
     $default_field_roles_by_arg{$_} eq 'SyForm::Field::Verify'
   } keys %default_field_roles_by_arg),
   html => 'SyForm::HTML',
+  syccess => 'SyForm::Verify',
   bootstrap => 'SyForm::Bootstrap',
 );
 

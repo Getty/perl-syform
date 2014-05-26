@@ -19,6 +19,12 @@ for (@syccess_directives) {
   );
 }
 
+has syccess => (
+  is => 'ro',
+  isa => 'HashRef',
+  predicate => 'has_syccess',
+);
+
 has no_delete_on_invalid_result => (
   is => 'ro',
   isa => 'Bool',

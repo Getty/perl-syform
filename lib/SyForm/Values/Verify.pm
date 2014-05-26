@@ -41,12 +41,19 @@ sub verify_values {
       my $has = 'has_'.$_;
       $args{$_} = $field->$_ if $field->$has;
     }
+    if ($field->has_syccess) {
+      my %syccess_args = %{$field->syccess};
+      $args{$_} = $syccess_args{$_} for keys %syccess_args;
+    }
     if (%args) {
       push @fields, $name, { %args };
       $params{$name} = $values->get_value($name) if $values->has_value($name);
     }
   }
+  my %syccess_args = $self->syform->has_syccess
+    ? ( %{$self->syform->syccess} ) : ();
   return Syccess->new(
+    %syccess_args,
     fields => [ @fields ],
   )->validate( %params );
 };

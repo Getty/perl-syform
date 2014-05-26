@@ -49,6 +49,7 @@ sub _build_html_label_attributes {
   my ( $self ) = @_;
   return {
     for => $self->html_id,
+    class => 'control-label',
   };
 }
 
@@ -97,6 +98,7 @@ sub _build_html_input {
   my %attributes = %{$self->html_input_attributes};
   return INPUT({
     %attributes,
+    class => 'form-control',
   })->as_html;
 }
 
