@@ -2,6 +2,7 @@ package SyForm::Field::Process;
 # ABSTRACT: Role for processed fields
 
 use Moose::Role;
+use Module::Runtime qw( use_module );
 use namespace::clean -except => 'meta';
 
 sub has_value_by_args {
@@ -33,6 +34,67 @@ sub get_value_by_process_args {
 sub get_value_by_process_arg {
   my ( $self, $arg ) = @_;
   return $arg;
+}
+
+has viewfield_roles => (
+  isa => 'ArrayRef[Str]',
+  is => 'ro',
+  lazy_build => 1,
+);
+
+sub _build_viewfield_roles {
+  my ( $self ) = @_;
+  return [];
+}
+
+has viewfield_class => (
+  isa => 'Str',
+  is => 'ro',
+  lazy_build => 1,
+);
+
+sub _build_viewfield_class {
+  my ( $self ) = @_;
+  return use_module('SyForm::ViewField');
+}
+
+sub viewfields_for_view {
+  my ( $self, $view ) = @_;
+  my @viewfield_roles = @{$self->viewfield_roles};
+  my %viewfield_args = $self->viewfield_args_by_view($view);
+  if (defined $viewfield_args{roles}) {
+    push @viewfield_roles, @{delete $viewfield_args{roles}};
+  }
+  return $self->create_viewfield_for_view($view,%viewfield_args);
+}
+
+sub create_viewfield_for_view {
+  my ( $self, $view, %args ) = @_;
+  my @traits = defined $args{roles} ? @{delete $args{roles}} : ();
+  my $viewfield_class = $self->viewfield_class;
+  for my $trait (@traits) {
+    $viewfield_class = $viewfield_class->with_traits($trait)
+      unless $viewfield_class->does($trait);
+  }
+  return $viewfield_class->new({
+    syform => $self->syform,
+    field => $self,
+    %args,
+  });
+}
+
+sub viewfield_fields_list_by_view {
+  my ( $self, $view ) = @_;
+  return $self->name, { $self->viewfield_args_by_view($view) };
+}
+
+sub viewfield_args_by_view {
+  my ( $self, $view ) = @_;
+  return 
+    $view->has_results && $view->results->values->has_value($self->name)
+      ? ( value => $results->values->get_value($self->name) ) : (),
+    $view->has_results && $view->results->has_result($self->name)
+      ? ( result => $results->get_result($self->name) ) : ();
 }
 
 sub has_result_by_values {
@@ -69,12 +131,9 @@ sub get_result_by_value {
 sub view_args_by_results {
   my ( $self, $results ) = @_;
   my @roles = $self->view_roles_by_results($results);
-  my @viewfield_roles = $self->viewfield_roles_by_results($results);
   return (
     scalar @roles
       ? ( roles => [ @roles ] ) : (),
-    scalar @viewfield_roles
-      ? ( viewfield_roles => [ @viewfield_roles ] ) : (),
     $self->custom_view_args_by_results,
   );
 }
@@ -84,26 +143,7 @@ sub custom_view_args_by_results {
   return;
 }
 
-sub viewfield_fields_list_by_results {
-  my ( $self, $results ) = @_;
-  return $self->name, { $self->viewfield_args_by_results($results) };
-}
-
-sub viewfield_args_by_results {
-  my ( $self, $results ) = @_;
-  return 
-    $results->values->has_value($self->name)
-      ? ( value => $results->values->get_value($self->name) ) : (),
-    $results->has_result($self->name)
-      ? ( result => $results->get_result($self->name) ) : ();
-}
-
 sub view_roles_by_results {
-  my ( $self, $results ) = @_;
-  return;
-}
-
-sub viewfield_roles_by_results {
   my ( $self, $results ) = @_;
   return;
 }

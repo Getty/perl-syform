@@ -1,11 +1,12 @@
 package SyForm::Field;
 # ABSTRACT: Role for fields in SyForm
 
-use Moose::Role;
+use Moose;
 use namespace::clean -except => 'meta';
 
 with qw(
   MooseX::Traits
+  SyForm::Field::Process
 );
 
 has syform => (

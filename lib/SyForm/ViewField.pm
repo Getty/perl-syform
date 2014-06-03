@@ -1,7 +1,7 @@
 package SyForm::ViewField;
-# ABSTRACT: Role for fields inside a SyForm::View
+# ABSTRACT: View fields inside a SyForm::View
 
-use Moose::Role;
+use Moose;
 use namespace::clean -except => 'meta';
 
 with qw(
@@ -10,8 +10,8 @@ with qw(
 
 has field => (
   is => 'ro',
-  does => 'SyForm::Field',
-  required => 1,
+  isa => 'SyForm::Field',
+  predicate => 'has_field',
 );
 
 has view => (
@@ -20,7 +20,9 @@ has view => (
   required => 1,
   handles => [qw(
     viewfield
-    results
+    viewfields
+    field
+    fields
     syform
   )],
 );
@@ -41,13 +43,8 @@ sub _build_has_name { 'has_'.($_[0]->name) }
 has label => (
   is => 'ro',
   isa => 'Str',
-  lazy_build => 1,
+  predicate => 'has_field',
 );
-
-sub _build_label {
-  my ( $self ) = @_;
-  return $self->field->label;
-}
 
 has value => (
   is => 'ro',
@@ -64,6 +61,13 @@ sub val {
   return $self->result if $self->has_result;
   return $self->value if $self->has_value;
   return;
+}
+
+sub has_val {
+  my ( $self ) = @_;
+  return 1 if $self->has_result;
+  return 1 if $self->has_value;
+  return 0;
 }
 
 1;

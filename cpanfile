@@ -1,8 +1,9 @@
 
-requires 'List::MoreUtils', '0';
 requires 'Moose', '2.1204';
 requires 'MooseX::Role::WithOverloading', '0.13';
 requires 'MooseX::Traits', '0.12';
+requires 'Module::Load::Conditional', '0';
+requires 'Module::Runtime', '0';
 requires 'namespace::clean', '0';
 requires 'Syccess', '0';
 requires 'HTML::Declare', '0';
