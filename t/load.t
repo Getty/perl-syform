@@ -14,21 +14,19 @@ for (qw(
   SyForm::Exception::Role::WithSyFormField
   SyForm::Exception::Role::WithSyFormResults
   SyForm::Exception::Role::WithSyFormValues
-  SyForm::Exception::UnexpectedArgToCreate
   SyForm::Exception::UnexpectedValueOnViewFieldRoles
   SyForm::Exception::UnknownErrorOnBuildField
   SyForm::Exception::UnknownErrorOnBuildFields
-  SyForm::Exception::UnknownErrorOnCreate
   SyForm::Exception::UnknownErrorOnProcess
   SyForm::Exception::UnknownErrorOnProcessValues
   SyForm::Exception::UnknownErrorOnResultsBuildView
   SyForm::Exception::UnknownErrorOnValuesBuildResults
   SyForm::Exception::ValidationFailedForTypeConstraint
   SyForm::Field
+  SyForm::Field::Bootstrap
   SyForm::Field::Default
   SyForm::Field::HTML
   SyForm::Field::Process
-  SyForm::Fields
   SyForm::Field::Verify
   SyForm::HTML
   SyForm::Label

@@ -14,6 +14,7 @@ has syform => (
   required => 1,
   handles => [qw(
     field
+    field_names
   )],
 );
 
@@ -35,7 +36,7 @@ sub _build_results {
   eval {
     my %results_args;
     my @results_traits = @{$self->syform->results_roles};
-    for my $field (@{$self->syform->fields}) {
+    for my $field ($self->syform->fields->Values) {
       my %field_results_args = $field->results_args_by_values($self);
       push @results_traits, @{delete $field_results_args{roles}}
         if defined $field_results_args{roles};
@@ -54,7 +55,7 @@ sub create_results {
   my ( $self, %args ) = @_;
   my @traits = defined $args{roles} ? @{delete $args{roles}} : ();
   my %results;
-  for my $field (@{$self->syform->fields}) {
+  for my $field ($self->syform->fields->Values) {
     my $name = $field->name;
     $results{$name} = delete $args{$name} if exists $args{$name};
   }

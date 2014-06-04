@@ -75,7 +75,6 @@ Issue Tracker
 use Moose;
 use Tie::IxHash;
 use Carp qw( croak );
-use Moose::Util::TypeConstraints;
 use Module::Runtime qw( use_module );
 use SyForm::Exception;
 use namespace::clean -except => 'meta';
@@ -83,6 +82,8 @@ use namespace::clean -except => 'meta';
 with qw(
   MooseX::Traits
   SyForm::Process
+  SyForm::Verify
+  SyForm::Label
 );
 
 #######################
@@ -133,6 +134,17 @@ sub _build_fields {
   return $fields;
 }
 
+has field_names => (
+  isa => 'ArrayRef[Str]',
+  is => 'ro',
+  lazy_build => 1,
+);
+
+sub _build_field_names {
+  my ( $self ) = @_;
+  return [map { $_->name } $self->fields->Values];
+}
+
 has field_args => (
   isa => 'HashRef',
   is => 'ro',
@@ -163,7 +175,7 @@ has field_class => (
 
 sub _build_field_class {
   my ( $self ) = @_;
-  return 'SyForm::Field';
+  return use_module('SyForm::Field');
 }
 
 sub new_field {

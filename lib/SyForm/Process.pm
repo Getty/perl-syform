@@ -1,7 +1,7 @@
 package SyForm::Process;
 # ABSTRACT: Role for processed fields
 
-use Moose;
+use Moose::Role;
 use List::MoreUtils qw( uniq );
 use Module::Runtime qw( use_module );
 use namespace::clean;
@@ -76,7 +76,7 @@ sub process_values {
   eval {
     my %values_args;
     my @values_traits = @{$self->values_roles};
-    for my $field (@{$self->fields}) {
+    for my $field ($self->fields->Values) {
       my %field_values_args = $field->values_args_by_process_args(%args);
       push @values_traits, @{delete $field_values_args{roles}}
         if defined $field_values_args{roles};
@@ -95,7 +95,7 @@ sub create_values {
   my ( $self, %args ) = @_;
   my @traits = defined $args{roles} ? @{delete $args{roles}} : ();
   my %values;
-  for my $field (@{$self->fields}) {
+  for my $field ($self->fields->Values) {
     my $name = $field->name;
     $values{$name} = delete $args{$name} if exists $args{$name};
   }

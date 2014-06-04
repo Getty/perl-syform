@@ -91,10 +91,12 @@ sub viewfield_fields_list_by_view {
 sub viewfield_args_by_view {
   my ( $self, $view ) = @_;
   return 
+    label => $self->label,
+    name => $self->name,
     $view->has_results && $view->results->values->has_value($self->name)
-      ? ( value => $results->values->get_value($self->name) ) : (),
+      ? ( value => $view->results->values->get_value($self->name) ) : (),
     $view->has_results && $view->results->has_result($self->name)
-      ? ( result => $results->get_result($self->name) ) : ();
+      ? ( result => $view->results->get_result($self->name) ) : ();
 }
 
 sub has_result_by_values {

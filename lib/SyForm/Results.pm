@@ -15,6 +15,7 @@ has values => (
   handles => [qw(
     syform
     field
+    field_names
   )],
 );
 
@@ -37,7 +38,7 @@ sub _build_view {
     my %view_args;
     my %viewfield_traits;
     my @view_traits = @{$self->syform->view_roles};
-    for my $field (@{$self->syform->fields}) {
+    for my $field ($self->syform->fields->Values) {
       my %field_view_args = $field->view_args_by_results($self);
       push @view_traits, @{delete $field_view_args{roles}}
         if defined $field_view_args{roles};

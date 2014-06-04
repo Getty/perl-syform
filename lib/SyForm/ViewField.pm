@@ -19,11 +19,11 @@ has view => (
   isa => 'SyForm::View',
   required => 1,
   handles => [qw(
-    viewfield
     viewfields
-    field
     fields
     syform
+    results
+    values
   )],
 );
 
@@ -43,7 +43,7 @@ sub _build_has_name { 'has_'.($_[0]->name) }
 has label => (
   is => 'ro',
   isa => 'Str',
-  predicate => 'has_field',
+  predicate => 'has_label',
 );
 
 has value => (

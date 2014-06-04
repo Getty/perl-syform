@@ -16,6 +16,7 @@ has results => (
   predicate => 'has_results',
   handles => [qw(
     syform
+    values
   )],
 );
 
