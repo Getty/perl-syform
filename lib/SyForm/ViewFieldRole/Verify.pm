@@ -1,8 +1,7 @@
 package SyForm::ViewField::Verify;
 # ABSTRACT: Trait for SyForm fields of SyForm::Results and SyForm::Values attributes
 
-use Moose::Role;
-use namespace::clean -except => 'meta';
+use Moo::Role;
 
 sub is_invalid {
   my ( $self ) = @_;
@@ -29,7 +28,8 @@ has errors => (
 
 sub _build_errors {
   my ( $self ) = @_;
-  return $self->results->syccess_result->errors($self->name);
+  return $self->results->does('SyForm::ResultsRole::Success')
+    ? $self->results->syccess_result->errors($self->name) : [];
 }
 
 # sub has_original_value {

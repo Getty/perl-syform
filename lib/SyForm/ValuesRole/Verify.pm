@@ -1,15 +1,13 @@
-package SyForm::Values::Verify;
+package SyForm::ValuesRole::Verify;
 # ABSTRACT: Verification of values for the SyForm::Results
 
-use Moose::Role;
-use Syccess;
-use namespace::clean -except => 'meta';
+use Moo::Role;
 
 around create_results => sub {
   my ( $orig, $self, %args ) = @_;
   my $no_success = (exists $args{success} && !$args{success}) ? 1 : 0;
   my $syccess_result = $self->verify_values($self);
-  for my $field (@{$self->syform->verify_process_fields}) {
+  for my $field ($self->syform->fields->Values) {
     my $field_name = $field->name;
     my @field_errors = @{$syccess_result->errors($field_name)};
     if (scalar @field_errors > 0) {
@@ -24,36 +22,19 @@ around create_results => sub {
   return $self->$orig(%args);
 };
 
-# extra function to make it overrideable for other roles to limit
-# functionality of this module
-sub syccess_directives {
-  @SyForm::Field::Verify::syccess_directives
-}
-
 sub verify_values {
   my ( $self, $values ) = @_;
   my @fields;
   my %params;
-  for my $field (@{$self->syform->verify_process_fields}) {
+  for my $field ($self->syform->fields->Values) {
     my $name = $field->name;
-    my %args;
-    for ($self->syccess_directives) {
-      my $has = 'has_'.$_;
-      $args{$_} = $field->$_ if $field->$has;
-    }
-    if ($field->has_syccess) {
-      my %syccess_args = %{$field->syccess};
-      $args{$_} = $syccess_args{$_} for keys %syccess_args;
-    }
-    if (%args) {
-      push @fields, $name, { %args };
+    if ($field->has_verify) {
+      push @fields, $name, $field->verify;
       $params{$name} = $values->get_value($name) if $values->has_value($name);
     }
   }
-  my %syccess_args = $self->syform->has_syccess
-    ? ( %{$self->syform->syccess} ) : ();
-  return Syccess->new(
-    %syccess_args,
+  return $self->syform->loaded_syccess_class->new(
+    %{$self->syform->syccess},
     fields => [ @fields ],
   )->validate( %params );
 };

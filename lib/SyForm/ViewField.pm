@@ -1,22 +1,19 @@
 package SyForm::ViewField;
 # ABSTRACT: View fields inside a SyForm::View
 
-use Moose;
-use namespace::clean -except => 'meta';
+use Moo;
 
 with qw(
-  MooseX::Traits
+  MooX::Traits
 );
 
 has field => (
   is => 'ro',
-  isa => 'SyForm::Field',
-  predicate => 'has_field',
+  predicate => 1,
 );
 
 has view => (
   is => 'ro',
-  isa => 'SyForm::View',
   required => 1,
   handles => [qw(
     viewfields
@@ -29,31 +26,27 @@ has view => (
 
 has name => (
   is => 'ro',
-  isa => 'Str',
   required => 1,
 );
 
 has has_name => (
-  is => 'ro',
-  isa => 'Str',
-  lazy_build => 1,
+  is => 'lazy',
 );
 sub _build_has_name { 'has_'.($_[0]->name) }
 
 has label => (
   is => 'ro',
-  isa => 'Str',
-  predicate => 'has_label',
+  predicate => 1,
 );
 
 has value => (
   is => 'ro',
-  predicate => 'has_value',
+  predicate => 1,
 );
 
 has result => (
   is => 'ro',
-  predicate => 'has_result',
+  predicate => 1,
 );
 
 sub val {

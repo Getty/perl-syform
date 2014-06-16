@@ -1,7 +1,7 @@
 package SyForm::Exception;
 # ABSTRACT: SyForm base exception class
 
-use Moose;
+use Moo;
 extends 'Throwable::Error';
 
 around throw => sub {

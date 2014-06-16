@@ -1,9 +1,8 @@
-package SyForm::Field::Process;
+package SyForm::FieldRole::Process;
 # ABSTRACT: Role for processed fields
 
-use Moose::Role;
+use Moo::Role;
 use Module::Runtime qw( use_module );
-use namespace::clean -except => 'meta';
 
 sub has_value_by_args {
   my ( $self, %args ) = @_;
@@ -37,9 +36,7 @@ sub get_value_by_process_arg {
 }
 
 has viewfield_roles => (
-  isa => 'ArrayRef[Str]',
-  is => 'ro',
-  lazy_build => 1,
+  is => 'lazy',
 );
 
 sub _build_viewfield_roles {
@@ -48,9 +45,7 @@ sub _build_viewfield_roles {
 }
 
 has viewfield_class => (
-  isa => 'Str',
-  is => 'ro',
-  lazy_build => 1,
+  is => 'lazy',
 );
 
 sub _build_viewfield_class {

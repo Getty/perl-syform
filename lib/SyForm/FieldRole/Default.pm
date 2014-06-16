@@ -1,12 +1,11 @@
-package SyForm::Field::Default;
+package SyForm::FieldRole::Default;
 # ABSTRACT: A default for the field
 
-use Moose::Role;
-use namespace::clean -except => 'meta';
+use Moo::Role;
 
 has default => (
   is => 'ro',
-  predicate => 'has_default',
+  predicate => 1,
 );
 
 around has_value_by_args => sub {

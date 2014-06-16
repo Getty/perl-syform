@@ -1,19 +1,19 @@
 package SyForm::View;
 # ABSTRACT: Container for SyForm::Results and SyForm::ViewField
 
-use Moose;
+use Moo;
 use Tie::IxHash;
 use Module::Runtime qw( use_module );
-use namespace::clean -except => 'meta';
 
 with qw(
-  MooseX::Traits
+  MooX::Traits
+  SyForm::ViewRole::Success
+  SyForm::ViewRole::Verify
 );
 
 has results => (
   is => 'ro',
-  isa => 'SyForm::Results',
-  predicate => 'has_results',
+  required => 1,
   handles => [qw(
     syform
     values
@@ -21,9 +21,7 @@ has results => (
 );
 
 has field_names => (
-  is => 'ro',
-  isa => 'ArrayRef[Str]',
-  lazy_build => 1,
+  is => 'lazy',
 );
 
 sub _build_field_names {
@@ -32,9 +30,7 @@ sub _build_field_names {
 }
 
 has fields => (
-  is => 'ro',
-  isa => 'Tie::IxHash',
-  lazy_build => 1,
+  is => 'lazy',
   init_arg => undef,
 );
 sub viewfields { shift->fields }

@@ -1,6 +1,97 @@
 package SyForm;
 # ABSTRACT: Easy form management
 
+use Moo;
+use Tie::IxHash;
+use Module::Runtime qw( use_module );
+use SyForm::Exception;
+
+with($_) for (qw(
+  MooX::Traits
+  SyForm::Role::Process
+  SyForm::Role::Label
+));
+
+#######################
+#
+# Class Default Config
+#
+#######################
+
+has name => (
+  is => 'ro',
+  predicate => 1,
+);
+
+has fields_list => (
+  is => 'ro',
+  init_arg => 'fields',
+  required => 1,
+);
+
+has fields => (
+  is => 'lazy',
+  init_arg => undef,
+);
+sub field { shift->fields->FETCH(@_) }
+
+sub _build_fields {
+  my ( $self ) = @_;
+  my $fields = Tie::IxHash->new;
+  eval {
+    my $fields_list = Tie::IxHash->new(@{$self->fields_list});
+    for my $name ($fields_list->Keys) {
+      my %field_args = %{$fields_list->FETCH($name)};
+      $fields->Push($name, $self->new_field($name, %field_args));
+    }
+  };
+  SyForm->throw( UnknownErrorOnBuildFields => $self, $@ ) if $@;
+  return $fields;
+}
+
+has field_names => (
+  is => 'lazy',
+);
+
+sub _build_field_names {
+  my ( $self ) = @_;
+  return [map { $_->name } $self->fields->Values];
+}
+
+has field_class => (
+  is => 'lazy',
+);
+
+sub _build_field_class { return 'SyForm::Field' }
+
+has loaded_field_class => (
+  is => 'lazy',
+);
+
+sub _build_loaded_field_class {
+  my ( $self ) = @_;
+  return use_module($self->field_class);
+}
+
+sub new_field {
+  my ( $self, $name, %field_args ) = @_;
+  my $field;
+  my $class = delete $field_args{class} || $self->loaded_field_class;
+  return $class->new(
+    syform => $self,
+    name => $name,
+    %field_args,
+  );
+}
+
+sub throw {
+  my ( $class, $exception, @args ) = @_;
+  SyForm::Exception->throw($exception) if scalar(@args) == 0;
+  use_module('SyForm::Exception::'.$exception)->throw_with_args(@args);
+}
+
+1;
+
 =encoding utf8
 
 =head1 SYNOPSIS
@@ -51,9 +142,13 @@ package SyForm;
 
 =head1 DESCRIPTION
 
-SyForm is developed for L<SyContent|https://sycontent.de/>.
+B<SyForm> is developed for L<SyContent|https://sycontent.de/>.
 
-Restructuring..... B<TODO>
+B<WARNING:> So far the development of B<SyForm> is concentrating of delivering
+the featureset B<SyContent> requires. I don't advice using it without staying
+in contact with me (B<Getty>) at B<#sycontent> on B<irc.perl.org>. While the
+core API will stay stable, the way how to extend the system will change with
+the time.
 
 =head1 SUPPORT
 
@@ -70,145 +165,4 @@ Issue Tracker
 
   http://github.com/SyContent/SyForm/issues
 
-=cut
 
-use Moose;
-use Tie::IxHash;
-use Carp qw( croak );
-use Module::Runtime qw( use_module );
-use SyForm::Exception;
-use namespace::clean -except => 'meta';
-
-with qw(
-  MooseX::Traits
-  SyForm::Process
-  SyForm::Verify
-  SyForm::Label
-);
-
-#######################
-#
-# Class Default Config
-#
-#######################
-
-has name => (
-  isa => 'Str',
-  is => 'ro',
-  predicate => 'has_name',
-);
-
-has fields_list => (
-  isa => 'ArrayRef[Str|HashRef]',
-  is => 'ro',
-  init_arg => 'fields',
-  required => 1,
-);
-
-has fields => (
-  isa => 'Tie::IxHash',
-  is => 'ro',
-  init_arg => undef,
-  lazy_build => 1,
-);
-sub field { shift->fields->FETCH(@_) }
-
-sub _build_fields {
-  my ( $self ) = @_;
-  my $fields = Tie::IxHash->new;
-  my %default_field_args = %{$self->field_args};
-  eval {
-    my $fields_list = Tie::IxHash->new(@{$self->fields_list});
-    for my $name ($fields_list->Keys) {
-      my %field_args;
-      eval {
-        %field_args = ( %default_field_args, %{$fields_list->FETCH($name)} );
-        $fields->Push($name, $self->new_field($name,
-          %{$self->field_args}, %field_args,
-        ));
-      };
-      SyForm->throw( UnknownErrorOnBuildField => $name, { %field_args }, $@ ) if $@;
-    }
-  };
-  SyForm->throw( UnknownErrorOnBuildFields => $self, $@ ) if $@;
-  return $fields;
-}
-
-has field_names => (
-  isa => 'ArrayRef[Str]',
-  is => 'ro',
-  lazy_build => 1,
-);
-
-sub _build_field_names {
-  my ( $self ) = @_;
-  return [map { $_->name } $self->fields->Values];
-}
-
-has field_args => (
-  isa => 'HashRef',
-  is => 'ro',
-  lazy_build => 1,
-);
-
-sub _build_field_args {
-  my ( $self ) = @_;
-  return {};
-}
-
-has field_roles => (
-  isa => 'ArrayRef[Str]',
-  is => 'ro',
-  lazy_build => 1,
-);
-
-sub _build_field_roles {
-  my ( $self ) = @_;
-  return [];
-}
-
-has field_class => (
-  isa => 'Str',
-  is => 'ro',
-  lazy_build => 1,
-);
-
-sub _build_field_class {
-  my ( $self ) = @_;
-  return use_module('SyForm::Field');
-}
-
-sub new_field {
-  my ( $self, $name, %field_args ) = @_;
-  my $field;
-  my $class = delete $field_args{class} || $self->field_class;
-  my @traits = defined $field_args{roles}
-    ? (@{delete $field_args{roles}}) : ();
-  unshift @traits, @{$self->field_roles};
-  for my $trait (@traits) {
-    $class = $class->with_traits($trait);
-  }
-  return $class->new(
-    syform => $self,
-    name => $name,
-    %field_args,
-  );
-}
-
-sub add_traits {
-  my ( $class, @traits ) = @_;
-  for my $trait (@traits) {
-    $class = $class->with_traits($trait);
-  }
-  return $class;
-}
-
-sub throw {
-  my ( $class, $exception, @args ) = @_;
-  SyForm::Exception->throw($exception) if scalar(@args) == 0;
-  my $exception_class = 'SyForm::Exception::'.$exception;
-  use_module($exception_class);
-  $exception_class->throw_with_args(@args);
-}
-
-1;

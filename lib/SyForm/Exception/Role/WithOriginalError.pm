@@ -1,7 +1,7 @@
 package SyForm::Exception::Role::WithOriginalError;
 # ABSTRACT: Role for exceptions with a non SyForm error
 
-use Moose::Role;
+use Moo::Role;
 
 has original_error => (
   is => 'ro',

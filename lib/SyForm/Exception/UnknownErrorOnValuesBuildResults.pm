@@ -1,6 +1,6 @@
 package SyForm::Exception::UnknownErrorOnValuesBuildResults;
 
-use Moose;
+use Moo;
 extends 'SyForm::Exception';
 
 with qw(
