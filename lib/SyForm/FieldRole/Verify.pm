@@ -8,6 +8,11 @@ has verify => (
   predicate => 1,
 );
 
+has required => (
+  is => 'ro',
+  predicate => 1,
+);
+
 has delete_on_invalid_result => (
   is => 'lazy',
 );

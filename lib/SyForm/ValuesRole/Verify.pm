@@ -11,7 +11,7 @@ around create_results => sub {
     my $field_name = $field->name;
     my @field_errors = @{$syccess_result->errors($field_name)};
     if (scalar @field_errors > 0) {
-      unless ($self->syform->field($field_name)->no_delete_on_invalid_result) {
+      if ($self->syform->field($field_name)->delete_on_invalid_result) {
         delete $args{$field_name} if exists $args{$field_name};
       }
     }
@@ -28,8 +28,12 @@ sub verify_values {
   my %params;
   for my $field ($self->syform->fields->Values) {
     my $name = $field->name;
-    if ($field->has_verify) {
-      push @fields, $name, $field->verify;
+    if ($field->has_verify || $field->has_required) {
+      my @verify = $field->has_verify ? @{$field->verify} : ();
+      if ($field->has_required) {
+        unshift @verify, required => $field->required;
+      }
+      push @fields, $name, \@verify;
       $params{$name} = $values->get_value($name) if $values->has_value($name);
     }
   }

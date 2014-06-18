@@ -11,7 +11,7 @@ my $form = SyForm->new(
       required => 1,
     },
     'integer' => {
-      is_number => 1,
+      verify => [ is_number => 1 ],
     },
     'reqint' => {
       required => 1,
