@@ -5,52 +5,36 @@ use Test::More;
 
 for (qw(
   SyForm
-  SyForm::Bootstrap
-  SyForm::Class
   SyForm::Exception
-  SyForm::Exception::Role::WithCreateArgs
+  SyForm::Exception::OddNumberOfArgsOnCreateValuesByArgs
   SyForm::Exception::Role::WithOriginalError
   SyForm::Exception::Role::WithSyForm
   SyForm::Exception::Role::WithSyFormField
   SyForm::Exception::Role::WithSyFormResults
   SyForm::Exception::Role::WithSyFormValues
-  SyForm::Exception::UnexpectedValueOnViewFieldRoles
-  SyForm::Exception::UnknownErrorOnBuildField
+  SyForm::Exception::UnknownArgOnCreateValuesByArgs
   SyForm::Exception::UnknownErrorOnBuildFields
+  SyForm::Exception::UnknownErrorOnCreateValuesByArgs
   SyForm::Exception::UnknownErrorOnProcess
-  SyForm::Exception::UnknownErrorOnProcessValues
   SyForm::Exception::UnknownErrorOnResultsBuildView
   SyForm::Exception::UnknownErrorOnValuesBuildResults
-  SyForm::Exception::ValidationFailedForTypeConstraint
   SyForm::Field
-  SyForm::Field::Bootstrap
-  SyForm::Field::Default
-  SyForm::Field::HTML
-  SyForm::Field::Process
-  SyForm::Field::Verify
-  SyForm::HTML
-  SyForm::Label
-  SyForm::Meta::Attribute::Field
-  SyForm::Object
-  SyForm::Process
+  SyForm::FieldRole::Default
+  SyForm::FieldRole::Process
+  SyForm::FieldRole::Verify
   SyForm::Results
-  SyForm::Results::Object
-  SyForm::Results::Success
-  SyForm::Results::Verify
+  SyForm::ResultsRole::Success
+  SyForm::ResultsRole::Verify
+  SyForm::Role::Label
+  SyForm::Role::Process
+  SyForm::Role::Verify
   SyForm::Values
-  SyForm::Values::Object
-  SyForm::Values::Verify
-  SyForm::Verify
+  SyForm::ValuesRole::Verify
   SyForm::View
-  SyForm::View::Bootstrap
   SyForm::ViewField
-  SyForm::ViewField::Bootstrap
-  SyForm::ViewField::HTML
-  SyForm::ViewField::Verify
-  SyForm::View::HTML
-  SyForm::View::Object
-  SyForm::View::Success
-  SyForm::View::Verify
+  SyForm::ViewFieldRole::Verify
+  SyForm::ViewRole::Success
+  SyForm::ViewRole::Verify
 )) {
   use_ok($_);
 }

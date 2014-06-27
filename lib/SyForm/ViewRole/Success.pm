@@ -3,6 +3,8 @@ package SyForm::ViewRole::Success;
 
 use Moo::Role;
 
+use overload 'bool' => sub { $_[0]->success };
+
 has success => (
   is => 'lazy',
 );

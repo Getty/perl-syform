@@ -3,6 +3,8 @@ package SyForm::ResultsRole::Success;
 
 use Moo::Role;
 
+use overload 'bool' => sub { $_[0]->success };
+
 has success => (
   is => 'ro',
   required => 1,
