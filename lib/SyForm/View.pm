@@ -19,6 +19,7 @@ has results => (
     values
   )],
 );
+sub has_results { 1 } # results should be optional
 
 has field_names => (
   is => 'lazy',

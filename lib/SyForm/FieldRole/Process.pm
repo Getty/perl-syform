@@ -74,6 +74,7 @@ sub create_viewfield_for_view {
   return $viewfield_class->new({
     syform => $self->syform,
     field => $self,
+    view => $view,
     %args,
   });
 }
