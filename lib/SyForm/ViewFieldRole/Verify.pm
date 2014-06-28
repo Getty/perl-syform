@@ -9,9 +9,7 @@ sub is_invalid {
 }
 
 has is_valid => (
-  is => 'ro',
-  isa => 'Bool',
-  lazy_build => 1,
+  is => 'lazy',
 );
 
 sub _build_is_valid {
@@ -21,9 +19,7 @@ sub _build_is_valid {
 }
 
 has errors => (
-  is => 'ro',
-  isa => 'ArrayRef',
-  lazy_build => 1,
+  is => 'lazy',
 );
 
 sub _build_errors {
