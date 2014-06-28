@@ -1,4 +1,5 @@
 
+requires 'List::MoreUtils', '0';
 requires 'Moo', '0';
 requires 'MooX::Traits', '0';
 requires 'Module::Load::Conditional', '0';
