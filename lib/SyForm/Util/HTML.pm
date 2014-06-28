@@ -7,25 +7,12 @@ use Clone 'clone';
 
 our @EXPORT = qw(
 
-  clone_html_declare
-
   add_html_attr
   put_html_attr
   set_html_attr
   get_html_attr
 
 );
-
-sub clone_html_declare {
-  my ( $html_declare ) = @_;
-  my @children;
-  for my $child (@{$html_declare->children}) {
-    push @children, clone_html_declare($child);
-  }
-  my $clone = clone($html_declare);
-  $clone->children([ @children ]);
-  return $clone;
-}
 
 sub add_html_attr {
   my ( $html_declare, %attrs ) = @_;
@@ -39,7 +26,7 @@ sub put_html_attr {
 
 sub _add_or_put_html_attr {
   my ( $html_declare, $add_put, %attrs ) = @_;
-  my $clone = clone_html_declare($html_declare);
+  my $clone = clone($html_declare);
   for my $key (keys %attrs) {
     my $current = _get_html_attr($clone,$key);
     if ($current) {
@@ -60,7 +47,7 @@ sub _add_or_put_html_attr {
 
 sub set_html_attr {
   my ( $html_declare, %attrs ) = @_;
-  my $clone = clone_html_declare($html_declare);
+  my $clone = clone($html_declare);
   for my $key (keys %attrs) {
     my $current = _get_html_attr($clone,$key);
     if ($current) {
@@ -77,7 +64,6 @@ sub set_html_attr {
 
 sub get_html_attr {
   my ( $html_declare, @attrs ) = @_;
-
   my @values;
   for my $key (@attrs) {
     my $attr = _get_html_attr($html_declare, $key);

@@ -12,22 +12,9 @@ my $span = SPAN { class => 'test' };
 
 is(get_html_attr($span,'class'),'test','Testing get_html_attr on $span');
 
-my $cspan = clone_html_declare($span);
-
-isa_ok($cspan,'HTML::Declare','clone of $span');
-is_deeply({ %{$span} },{ %{$cspan} },'Identical clone of $span');
-ok(refaddr($span) != refaddr($cspan),'Not identical ref addr on $span clone');
-
 my $div = DIV { class => 'test2', _ => [
   SPAN { class => 'test3' }, SPAN { class => 'test4' },
 ] };
-my $cdiv = clone_html_declare($div);
-
-isa_ok($cdiv,'HTML::Declare','clone of $div');
-is_deeply({ %{$div} },{ %{$cdiv} },'Identical clone of $div');
-ok(refaddr($div) != refaddr($cdiv),'Not identical ref addr on $div clone');
-ok(refaddr($div->children->[0]) != refaddr($cdiv->children->[0]),'Not identical ref addr on $div clone first child');
-ok(refaddr($div->children->[1]) != refaddr($cdiv->children->[1]),'Not identical ref addr on $div clone second child');
 
 my $adiv = add_html_attr($div, class => "other", align => "left");
 
