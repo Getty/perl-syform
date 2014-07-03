@@ -3,13 +3,13 @@ use strict;
 use warnings;
 use Test::More;
 
-use SyForm::HTML;
+use SyForm::FormHTML;
 use HTML::Declare ':all';
 
-my $empty = SyForm::HTML->new;
+my $empty = SyForm::FormHTML->new;
 is("".$empty->html_declare,'<form/>','Empty form');
 
-my $some = SyForm::HTML->new(
+my $some = SyForm::FormHTML->new(
   action => 'testaction',
   onerror => 'testonerror',
   dir => 'testdir',
@@ -26,7 +26,7 @@ like($html,qr/dir="testdir"/,'$some has dir');
 like($html,qr/data-test="testdata"/,'$some has data-test');
 like($html,qr/data-test-2="testdata2"/,'$some has data-test-2');
 
-my $childs = SyForm::HTML->new(
+my $childs = SyForm::FormHTML->new(
   action => 'testaction',
   onerror => 'testonerror',
   dir => 'testdir',

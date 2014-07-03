@@ -2,7 +2,7 @@ package SyForm::Role::HTML;
 # ABSTRACT: SyForm::View::HTML configuration of the form
 
 use Moo::Role;
-use SyForm::HTML;
+use SyForm::FormHTML;
 
 has html => (
   is => 'lazy',
@@ -17,7 +17,7 @@ has html_args => (
 
 sub _build_html {
   my ( $self ) = @_;
-  return SyForm::HTML->new(
+  return SyForm::FormHTML->new(
     $self->has_html_args ? ( %{$self->html_args} ) : ()
   );
 }

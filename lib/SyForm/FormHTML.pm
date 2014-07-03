@@ -1,4 +1,4 @@
-package SyForm::HTML;
+package SyForm::FormHTML;
 # ABSTRACT: HTML Form
 
 use Moo;

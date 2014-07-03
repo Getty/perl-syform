@@ -125,6 +125,7 @@ sub html_declare {
       my $has = 'has_'.$key;
       $html_attributes{$key} = $self->$key if $self->$has;
     }
+    delete $html_attributes{value} if defined $html_attributes{value};
     my $value = $self->has_value ? $self->value : "";
     return TEXTAREA { %html_attributes, _ => $value, %with_attributes };
   } else {
