@@ -8,4 +8,9 @@ has input => (
   predicate => 1,
 );
 
+has html_label => (
+  is => 'ro',
+  predicate => 1,
+);
+
 1;

@@ -64,6 +64,7 @@ sub _build_syform_viewfield_labelhtml {
     for => $self->html_id,
     label => $self->label,
     $self->is_invalid ? ( errors => $self->errors ) : (),
+    $self->field->has_html_label ? ( %{$self->field->html_label} ) : (),
   );
 }
 

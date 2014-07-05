@@ -23,15 +23,6 @@ for my $attribute (@own_attributes, qw( errors )) {
   );
 }
 
-has with_errors => (
-  is => 'lazy',
-);
-
-sub _build_with_errors {
-  my ( $self ) = @_;
-  return 1;
-}
-
 has html_declare => (
   is => 'lazy',
 );
@@ -49,7 +40,7 @@ sub _build_html_declare {
   }
   $html_attributes{_} = [
     $self->label,
-    ( $self->with_errors && $self->has_errors ) ? (
+    $self->has_errors ? (
       map { EM { _ => $_->message } } @{$self->errors}
     ) : (),
   ],
