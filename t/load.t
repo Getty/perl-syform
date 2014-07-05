@@ -21,14 +21,17 @@ for (qw(
   SyForm::Exception::UnknownErrorOnResultsBuildView
   SyForm::Exception::UnknownErrorOnValuesBuildResults
   SyForm::Field
+  SyForm::FieldRole::Bootstrap
   SyForm::FieldRole::Default
   SyForm::FieldRole::HTML
   SyForm::FieldRole::Process
   SyForm::FieldRole::Verify
+  SyForm::FormBootstrap
   SyForm::FormHTML
   SyForm::Results
   SyForm::ResultsRole::Success
   SyForm::ResultsRole::Verify
+  SyForm::Role::Bootstrap
   SyForm::Role::HTML
   SyForm::Role::Label
   SyForm::Role::Process
@@ -40,8 +43,10 @@ for (qw(
   SyForm::ViewField
   SyForm::ViewField::InputHTML
   SyForm::ViewField::LabelHTML
+  SyForm::ViewFieldRole::Bootstrap
   SyForm::ViewFieldRole::HTML
   SyForm::ViewFieldRole::Verify
+  SyForm::ViewRole::Bootstrap
   SyForm::ViewRole::HTML
   SyForm::ViewRole::Success
   SyForm::ViewRole::Verify
