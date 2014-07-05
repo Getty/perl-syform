@@ -7,6 +7,7 @@ with qw(
   MooX::Traits
   SyForm::ViewFieldRole::Verify
   SyForm::ViewFieldRole::HTML
+  SyForm::ViewFieldRole::Bootstrap
 );
 
 has field => (

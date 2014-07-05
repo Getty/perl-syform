@@ -10,6 +10,7 @@ with qw(
   SyForm::ViewRole::Success
   SyForm::ViewRole::Verify
   SyForm::ViewRole::HTML
+  SyForm::ViewRole::Bootstrap
 );
 
 has results => (

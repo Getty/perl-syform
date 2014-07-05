@@ -24,6 +24,7 @@ my $form = SyForm->new(
     },
     'hidden' => {
       input => { type => 'hidden' },
+      default => "13",
     },
   ],
   html => {
@@ -65,6 +66,7 @@ like($html,qr{for="text"}i,'for text is found');
 like($html,qr{for="textwithval"}i,'for textwithval is found');
 like($html,qr{for="textarea"}i,'for textarea is found');
 like($html,qr{for="textareawithval"}i,'for textareawithval is found');
+like($html,qr{value="13"}i,'found the default value');
 like($html,qr{type="submit"}i,'Submit button found');
 
 done_testing;

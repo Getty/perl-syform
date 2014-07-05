@@ -7,6 +7,7 @@ use Module::Runtime qw( use_module );
 with qw(
   SyForm::Role::Verify
   SyForm::Role::HTML
+  SyForm::Role::Bootstrap
 );
 
 ##########

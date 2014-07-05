@@ -5,49 +5,68 @@ use Test::More;
 
 use SyForm;
 
-my $form = SyForm->create( Bootstrap => [
-  'text' => {
-    label => 'My Text',
-    html => 'text',
+my $form = SyForm->new(
+  fields => [
+    'text' => {
+      label => 'My Text',
+      required => 1,
+    },
+    'textwithval' => {
+      label => 'My Text with Value',
+    },
+    'textarea' => {
+      label => 'My Textarea',
+      input => { type => 'textarea' },
+    },
+    'textareawithval' => {
+      label => 'My Textarea with Value',
+      input => { type => 'textarea' },
+    },
+    'hidden' => {
+      input => { type => 'hidden' },
+      default => "13",
+    },
+  ],
+  html => {
+    class => "test",
+    method => "POST",
   },
-  'textwithval' => {
-    label => 'My Text with Value',
-    html => 'text',
+  html_submit => {
+    class => "submittest",
   },
-  'textarea' => {
-    label => 'My Textarea',
-    html => 'textarea',
-  },
-  'textareawithval' => {
-    label => 'My Textarea with Value',
-    html => 'textarea',
-  },
-  'hidden' => {
-    html => 'hidden',
-  },
-  'checkbox' => {
-    label => 'Check the checkbox',
-    html => 'checkbox',
-  },
-#   'readonly' => {
-#     label => 'My Text',
-#     html => 'text',
-#     readonly => 1,
-#   },
-]);
+);
 
-ok($form->does('SyForm::Bootstrap'),'$form does SyForm::Bootstrap');
+isa_ok($form,'SyForm','$form');
 
-ok(my $view = $form->process(
+my $text_field = $form->field('text');
+ok($text_field->does('SyForm::FieldRole::Bootstrap'),'bootstrap role loaded on Text field');
+
+my $textarea_field = $form->field('textarea');
+ok($textarea_field->does('SyForm::FieldRole::Bootstrap'),'bootstrap role loaded on Textarea field');
+
+my $hidden_field = $form->field('hidden');
+ok($hidden_field->does('SyForm::FieldRole::Bootstrap'),'bootstrap role loaded on Hidden field');
+
+my $view = $form->process(
   textwithval => 'val',
   textareawithval => 'more val'."\n".'and a new line',
-  checkbox => 1,
-),'$view is success');
+);
 
-ok($view->does('SyForm::View::Bootstrap'),'$view has Bootstrap role loaded');
+ok(!$view,'$view is no success');
 
-my $html = $view->bootstrap_render;
+ok($view->does('SyForm::ViewRole::Bootstrap'),'view has bootstrap role loaded');
 
-ok(length($html),'There is some output ;)');
+my $html = $view->html_bootstrap;
+
+use DDP; p($html);
+
+like($html,qr{<form}i,'Starting form tag found');
+like($html,qr{method="POST"}i,'Starting method found');
+like($html,qr{for="text"}i,'for text is found');
+like($html,qr{for="textwithval"}i,'for textwithval is found');
+like($html,qr{for="textarea"}i,'for textarea is found');
+like($html,qr{for="textareawithval"}i,'for textareawithval is found');
+like($html,qr{value="13"}i,'found the default value');
+like($html,qr{type="submit"}i,'Submit button found');
 
 done_testing;

@@ -144,7 +144,7 @@ sub throw {
 
 B<SyForm> is developed for L<SyContent|https://sycontent.de/>.
 
-B<WARNING:> So far the development of B<SyForm> is concentrating of delivering
+B<WARNING:> So far the development of B<SyForm> is concentrating on delivering
 the featureset B<SyContent> requires. I don't advice using it without staying
 in contact with me (B<Getty>) at B<#sycontent> on B<irc.perl.org>. While the
 core API will stay stable, the way how to extend the system will change with

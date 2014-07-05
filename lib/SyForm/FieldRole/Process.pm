@@ -4,6 +4,13 @@ package SyForm::FieldRole::Process;
 use Moo::Role;
 use Module::Runtime qw( use_module );
 
+with qw(
+  SyForm::FieldRole::Default
+  SyForm::FieldRole::Verify
+  SyForm::FieldRole::HTML
+  SyForm::FieldRole::Bootstrap
+);
+
 sub has_value_by_args {
   my ( $self, %args ) = @_;
   return exists($args{$self->name}) ? 1 : 0;

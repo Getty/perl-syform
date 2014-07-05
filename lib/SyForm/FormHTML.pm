@@ -68,23 +68,32 @@ has children => (
   predicate => 1,
 );
 
-has html_declare => (
+has html_attributes => (
   is => 'lazy',
 );
 
-sub _build_html_declare {
+sub _build_html_attributes {
   my ( $self ) = @_;
   my %html_attributes = %{$self->data_attributes};
   for my $key (@remote_attributes, @attributes) {
     my $has = 'has_'.$key;
     $html_attributes{$key} = $self->$key if $self->$has;
   }
+  return { %html_attributes };
+}
+
+has html_declare => (
+  is => 'lazy',
+);
+
+sub _build_html_declare {
+  my ( $self ) = @_;
   return FORM {
-    %html_attributes,
-    $self->has_children ? ( _ => [
-      ( map { $_->html_declare } @{$self->children} ),
+    %{$self->html_attributes},
+    _ => [
+      $self->has_children ? ( map { $_->html_declare } @{$self->children} ) : (),
       $self->no_submit ? () : ( $self->submit->html_declare ),
-    ] ) : (),
+    ],
   };
 }
 

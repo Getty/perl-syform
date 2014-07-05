@@ -7,7 +7,10 @@ use SyForm::FormHTML;
 use HTML::Declare ':all';
 
 my $empty = SyForm::FormHTML->new;
-is("".$empty->html_declare,'<form/>','Empty form');
+is("".$empty->html_declare,'<form><input type="submit"/></form>','Empty form');
+
+my $nosubmit = SyForm::FormHTML->new( no_submit => 1 );
+is("".$nosubmit->html_declare,'<form/>','No submit form (so REALLY empty)');
 
 my $some = SyForm::FormHTML->new(
   action => 'testaction',

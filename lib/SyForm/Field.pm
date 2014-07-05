@@ -6,9 +6,6 @@ use Moo;
 with qw(
   MooX::Traits
   SyForm::FieldRole::Process
-  SyForm::FieldRole::Verify
-  SyForm::FieldRole::Default
-  SyForm::FieldRole::HTML
 );
 
 has syform => (
