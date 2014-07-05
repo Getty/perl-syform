@@ -21,11 +21,6 @@ for my $attribute (@attributes) {
 has syform_formhtml => (
   is => 'ro',
   required => 1,
-  handles => {
-    form_html_attributes => 'html_attributes',
-    no_submit => 'no_submit',
-
-  },
 );
 
 has layout => (
@@ -35,20 +30,6 @@ has layout => (
 sub _build_layout {
   my ( $self ) = @_;
   return 'basic';
-}
-
-has html_declare => (
-  is => 'lazy',
-);
-
-sub _build_html_declare {
-  my ( $self ) = @_;
-  return FORM {
-    %{$self->form_html_attributes},
-    _ => [
-      $self->no_submit ? () : ( $self->syform_formhtml->submit->html_declare ),
-    ],
-  };
 }
 
 1;
