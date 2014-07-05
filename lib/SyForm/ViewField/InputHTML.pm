@@ -1,4 +1,4 @@
-package SyForm::Field::InputHTML;
+package SyForm::ViewField::InputHTML;
 
 use Moo;
 use List::MoreUtils qw( uniq );
@@ -113,8 +113,12 @@ for my $attribute (@attributes) {
   );
 }
 
-sub html_declare {
-  my ( $self, %with_attributes ) = @_;
+has html_declare => (
+  is => 'lazy',
+);
+
+sub _build_html_declare {
+  my ( $self ) = @_;
   my %html_attributes = %{$self->data_attributes};
   for my $key (@remote_attributes) {
     my $has = 'has_'.$key;
@@ -127,7 +131,7 @@ sub html_declare {
     }
     delete $html_attributes{value} if defined $html_attributes{value};
     my $value = $self->has_value ? $self->value : "";
-    return TEXTAREA { %html_attributes, _ => $value, %with_attributes };
+    return TEXTAREA { %html_attributes, _ => $value };
   } else {
     SyForm->throw("Unknown type")
       unless grep { $self->type eq $_ } @valid_types;
@@ -135,7 +139,7 @@ sub html_declare {
       my $has = 'has_'.$key;
       $html_attributes{$key} = $self->$key if $self->$has;
     }
-    return INPUT { %html_attributes, %with_attributes };
+    return INPUT { %html_attributes };
   }
 }
 

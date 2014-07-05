@@ -1,25 +1,25 @@
 package SyForm::Role::HTML;
-# ABSTRACT: SyForm::View::HTML configuration of the form
+# ABSTRACT: SyForm::ViewRole::HTML configuration of the form
 
 use Moo::Role;
-use SyForm::FormHTML;
 
 has html => (
-  is => 'lazy',
-  init_arg => undef,
-);
-
-has html_args => (
   is => 'ro',
-  init_arg => 'html',
   predicate => 1,
 );
 
-sub _build_html {
+has html_submit => (
+  is => 'ro',
+  predicate => 1,
+);
+
+has no_html_submit => (
+  is => 'lazy',
+);
+
+sub _build_no_html_submit {
   my ( $self ) = @_;
-  return SyForm::FormHTML->new(
-    $self->has_html_args ? ( %{$self->html_args} ) : ()
-  );
+  return 0;
 }
 
 1;

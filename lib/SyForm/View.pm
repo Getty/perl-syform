@@ -9,6 +9,7 @@ with qw(
   MooX::Traits
   SyForm::ViewRole::Success
   SyForm::ViewRole::Verify
+  SyForm::ViewRole::HTML
 );
 
 has results => (

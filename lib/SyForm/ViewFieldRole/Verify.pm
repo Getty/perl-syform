@@ -1,9 +1,13 @@
-package SyForm::ViewField::Verify;
+package SyForm::ViewFieldRole::Verify;
 # ABSTRACT: Trait for SyForm fields of SyForm::Results and SyForm::Values attributes
 
 use Moo::Role;
 
-sub is_invalid {
+has is_invalid => (
+  is => 'lazy',
+);
+
+sub _build_is_invalid {
   my ( $self ) = @_;
   return $self->is_valid ? 0 : 1;
 }

@@ -5,6 +5,8 @@ use Moo;
 
 with qw(
   MooX::Traits
+  SyForm::ViewFieldRole::Verify
+  SyForm::ViewFieldRole::HTML
 );
 
 has field => (

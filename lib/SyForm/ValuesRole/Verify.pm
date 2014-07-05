@@ -33,6 +33,7 @@ sub verify_values {
       if ($field->has_required) {
         unshift @verify, required => $field->required;
       }
+      unshift @verify, label => $field->label;
       push @fields, $name, \@verify;
       $params{$name} = $values->get_value($name) if $values->has_value($name);
     }
