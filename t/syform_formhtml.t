@@ -35,15 +35,12 @@ my $childs = SyForm::FormHTML->new(
     test_2 => 'testdata2',
   },
 );
-my $child = DIV { class => "test" };
-my $chtml = "".$childs->html_declare($child);
+my $chtml = "".$childs->html_declare;
 like($chtml,qr/^\<form/,'$childs has opening formtag');
 like($chtml,qr/action="testaction"/,'$childs has action');
 like($chtml,qr/onerror="testonerror"/,'$childs has onerror');
 like($chtml,qr/dir="testdir"/,'$childs has dir');
 like($chtml,qr/data-test="testdata"/,'$childs has data-test');
 like($chtml,qr/data-test-2="testdata2"/,'$childs has data-test-2');
-like($chtml,qr/\<div class="test"\/\>/,'$childs has child div');
-like($chtml,qr/\<\/form\>$/,'$childs has closing formtag');
 
 done_testing;
