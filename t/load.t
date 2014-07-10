@@ -5,8 +5,6 @@ use Test::More;
 
 for (qw(
   SyForm
-  SyForm::CommonRole::EventHTML
-  SyForm::CommonRole::GlobalHTML
   SyForm::Exception
   SyForm::Exception::OddNumberOfArgsOnCreateValuesByArgs
   SyForm::Exception::Role::WithOriginalError
@@ -26,8 +24,6 @@ for (qw(
   SyForm::FieldRole::HTML
   SyForm::FieldRole::Process
   SyForm::FieldRole::Verify
-  SyForm::FormBootstrap
-  SyForm::FormHTML
   SyForm::Results
   SyForm::ResultsRole::Success
   SyForm::ResultsRole::Verify
@@ -36,13 +32,10 @@ for (qw(
   SyForm::Role::Label
   SyForm::Role::Process
   SyForm::Role::Verify
-  SyForm::Util::HTML
   SyForm::Values
   SyForm::ValuesRole::Verify
   SyForm::View
   SyForm::ViewField
-  SyForm::ViewField::InputHTML
-  SyForm::ViewField::LabelHTML
   SyForm::ViewFieldRole::Bootstrap
   SyForm::ViewFieldRole::HTML
   SyForm::ViewFieldRole::Verify
