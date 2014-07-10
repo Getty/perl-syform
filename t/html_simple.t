@@ -59,14 +59,14 @@ ok(!$view,'$view is no success');
 
 ok($view->does('SyForm::ViewRole::HTML'),'view has html role loaded');
 
-my $html = $view->html;
-like($html,qr{<form}i,'Starting form tag found');
-like($html,qr{method="POST"}i,'Starting method found');
-like($html,qr{for="text"}i,'for text is found');
-like($html,qr{for="textwithval"}i,'for textwithval is found');
-like($html,qr{for="textarea"}i,'for textarea is found');
-like($html,qr{for="textareawithval"}i,'for textareawithval is found');
-like($html,qr{value="13"}i,'found the default value');
-like($html,qr{type="submit"}i,'Submit button found');
+# my $html = $view->html;
+# like($html,qr{<form}i,'Starting form tag found');
+# like($html,qr{method="POST"}i,'Starting method found');
+# like($html,qr{for="text"}i,'for text is found');
+# like($html,qr{for="textwithval"}i,'for textwithval is found');
+# like($html,qr{for="textarea"}i,'for textarea is found');
+# like($html,qr{for="textareawithval"}i,'for textareawithval is found');
+# like($html,qr{value="13"}i,'found the default value');
+# like($html,qr{type="submit"}i,'Submit button found');
 
 done_testing;
