@@ -4,8 +4,7 @@ package SyForm::ViewRole::Bootstrap;
 use Moo::Role;
 use SyForm::FormBootstrap;
 
-# Should be on, when the roles are dynamical
-#use overload '""' => sub { $_[0]->html_bootstrap };
+use overload '""' => sub { $_[0]->html_bootstrap };
 
 has html_bootstrap => (
   is => 'lazy',
@@ -32,6 +31,13 @@ has syform_formbootstrap => (
 sub _build_syform_formbootstrap {
   my ( $self ) = @_;
   return SyForm::FormBootstrap->new(
+    children => [
+      map {
+        $_->has_syform_formbootstrap_children ? (
+          @{$_->syform_formbootstrap_children}
+        ) : (),
+      } $self->fields->Values
+    ],
     syform_formhtml => $self->syform_formhtml,
     $self->syform->has_bootstrap ? ( %{$self->syform->bootstrap} ) : (),
   );

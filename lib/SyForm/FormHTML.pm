@@ -103,6 +103,7 @@ has html_declare_children => (
 
 sub _build_html_declare_children {
   my ( $self ) = @_;
+  return unless $self->has_children;
   my @children;
   for my $child (@{$self->children}) {
     if (!ref $child || $child->$_isa('HTML::Declare')) {

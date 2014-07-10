@@ -56,9 +56,9 @@ ok(!$view,'$view is no success');
 
 ok($view->does('SyForm::ViewRole::Bootstrap'),'view has bootstrap role loaded');
 
-# my $html = $view->html_bootstrap;
+my $html = $view->html_bootstrap;
 
-# use DDP; p($html);
+use DDP; p($html);
 
 # like($html,qr{<form}i,'Starting form tag found');
 # like($html,qr{method="POST"}i,'Starting method found');

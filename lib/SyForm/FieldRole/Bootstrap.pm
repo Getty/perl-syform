@@ -3,4 +3,15 @@ package SyForm::FieldRole::Bootstrap;
 
 use Moo::Role;
 
+has bootstrap => (
+  is => 'ro',
+  predicate => 1,
+);
+
+# Should be somewhere else
+has help => (
+  is => 'ro',
+  predicate => 1,
+);
+
 1;

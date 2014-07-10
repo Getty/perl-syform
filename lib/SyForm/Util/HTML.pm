@@ -80,4 +80,11 @@ sub _get_html_attr {
   return undef;
 }
 
+sub without_html_children {
+  my ( $html_declare ) = @_;
+  my $clone = clone($html_declare);
+  $clone->children([]);
+  return $clone;
+}
+
 1;

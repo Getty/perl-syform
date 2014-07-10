@@ -33,7 +33,7 @@ sub _build_syform_formhtml_children {
   my ( $self ) = @_;
   return [
     $self->syform_viewfield_inputhtml,
-    $self->has_label ? ( $self->syform_viewfield_labelhtml ) : (),
+    $self->syform_viewfield_labelhtml,
   ];
 }
 
@@ -47,7 +47,7 @@ sub _build_syform_viewfield_inputhtml {
     type => 'text',
     name => $self->html_name,
     id => $self->html_id,
-    $self->has_label ? ( title => $self->label ) : (),
+    title => $self->label,
     $self->has_val ? ( value => $self->val ) : (),
     $self->field->has_input ? ( %{$self->field->input} ) : (),
   );

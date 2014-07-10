@@ -4,7 +4,8 @@ package SyForm::ViewRole::HTML;
 use Moo::Role;
 use SyForm::FormHTML;
 
-use overload '""' => sub { $_[0]->html };
+# Should be on, when the roles are dynamical
+#use overload '""' => sub { $_[0]->html };
 
 has html => (
   is => 'lazy',
