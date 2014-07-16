@@ -1,7 +1,12 @@
-package SyForm::ViewRole::Bootstrap;
-# ABSTRACT: Bootstrap view functions
+package SyForm::View::Bootstrap;
 
-use Moo::Role;
+use Moo;
+
+with qw(
+  SyForm::ViewRole
+  SyForm::ViewRole::Success
+  SyForm::ViewRole::Verify
+);
 
 has bootstrap_layout => (
   is => 'lazy',

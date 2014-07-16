@@ -9,9 +9,12 @@ has verify => (
 );
 
 has required => (
-  is => 'ro',
-  predicate => 1,
+  is => 'lazy',
 );
+
+sub _build_required {
+  return 0;
+}
 
 has delete_on_invalid_result => (
   is => 'lazy',

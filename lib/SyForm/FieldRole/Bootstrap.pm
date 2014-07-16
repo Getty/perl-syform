@@ -14,4 +14,14 @@ has help => (
   predicate => 1,
 );
 
+has bootstrap_input_attributes => (
+  is => 'ro',
+  predicate => 1,
+);
+
+has bootstrap_formgroup_attributes => (
+  is => 'ro',
+  predicate => 1,
+);
+
 1;

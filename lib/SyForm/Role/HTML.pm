@@ -3,23 +3,28 @@ package SyForm::Role::HTML;
 
 use Moo::Role;
 
-has html => (
+has submit_value => (
   is => 'ro',
   predicate => 1,
 );
 
-has html_submit => (
-  is => 'ro',
-  predicate => 1,
-);
-
-has no_html_submit => (
+has no_submit => (
   is => 'lazy',
 );
 
-sub _build_no_html_submit {
+sub _build_no_submit {
   my ( $self ) = @_;
   return 0;
 }
+
+has target => (
+  is => 'ro',
+  predicate => 1,
+);
+
+has method => (
+  is => 'ro',
+  predicate => 1,
+);
 
 1;

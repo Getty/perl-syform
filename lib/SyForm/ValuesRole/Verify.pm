@@ -30,9 +30,7 @@ sub verify_values {
     my $name = $field->name;
     if ($field->has_verify || $field->has_required) {
       my @verify = $field->has_verify ? @{$field->verify} : ();
-      if ($field->has_required) {
-        unshift @verify, required => $field->required;
-      }
+      unshift @verify, required => 1 if $field->required;
       unshift @verify, label => $field->label;
       push @fields, $name, \@verify;
       $params{$name} = $values->get_value($name) if $values->has_value($name);

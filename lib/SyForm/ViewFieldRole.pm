@@ -1,7 +1,7 @@
-package SyForm::ViewField;
-# ABSTRACT: View fields inside a SyForm::View
+package SyForm::ViewFieldRole;
+# ABSTRACT: View fields inside a SyForm View
 
-use Moo;
+use Moo::Role;
 
 with qw(
   MooX::Traits

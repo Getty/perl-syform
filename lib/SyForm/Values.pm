@@ -12,8 +12,8 @@ has syform => (
   is => 'ro',
   required => 1,
   handles => [qw(
-    field
-    field_names
+    field field_names
+    has_name name
   )],
 );
 

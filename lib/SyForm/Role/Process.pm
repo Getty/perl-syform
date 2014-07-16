@@ -6,8 +6,6 @@ use Module::Runtime qw( use_module );
 
 with qw(
   SyForm::Role::Verify
-  SyForm::Role::HTML
-  SyForm::Role::Bootstrap
 );
 
 ##########
@@ -19,14 +17,14 @@ with qw(
 sub process {
   my ( $self, @args ) = @_;
   my $view;
-  eval { $view = $self->process_view(@args) };
+  eval { $view = $self->process_results(@args) };
   SyForm->throw( UnknownErrorOnProcess => $self,[@args], $@ || '$view is undefined' ) if $@ || !defined $view;
   return $view;
 }
 
 #################
 #
-# Process Values
+# Generate Values
 #
 #################
 
@@ -128,25 +126,25 @@ sub process_results {
 #
 #######
 
-has view_class => (
-  is => 'lazy',
-);
+# has view_class => (
+#   is => 'lazy',
+# );
 
-sub _build_view_class { return 'SyForm::View' }
+# sub _build_view_class { return 'SyForm::View' }
 
-has loaded_view_class => (
-  is => 'lazy',
-);
+# has loaded_view_class => (
+#   is => 'lazy',
+# );
 
-sub _build_loaded_view_class {
-  my ( $self ) = @_;
-  return use_module($self->view_class);
-}
+# sub _build_loaded_view_class {
+#   my ( $self ) = @_;
+#   return use_module($self->view_class);
+# }
 
-sub process_view {
-  my ( $self, @args ) = @_;
-  my $results = $self->process_results(@args);
-  return $results->view;
-}
+# sub process_view {
+#   my ( $self, @args ) = @_;
+#   my $results = $self->process_results(@args);
+#   return $results->view;
+# }
 
 1;

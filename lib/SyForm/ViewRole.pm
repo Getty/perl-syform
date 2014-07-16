@@ -1,17 +1,9 @@
-package SyForm::View;
-# ABSTRACT: Container for SyForm::Results and SyForm::ViewField
+package SyForm::ViewRole;
+# ABSTRACT: View role for SyForm::Results and SyForm::ViewField
 
-use Moo;
+use Moo::Role;
 use Tie::IxHash;
 use Module::Runtime qw( use_module );
-
-with qw(
-  MooX::Traits
-  SyForm::ViewRole::Success
-  SyForm::ViewRole::Verify
-  SyForm::ViewRole::HTML
-  SyForm::ViewRole::Bootstrap
-);
 
 has results => (
   is => 'ro',
@@ -19,6 +11,7 @@ has results => (
   handles => [qw(
     syform
     values
+    has_name name
   )],
 );
 sub has_results { 1 } # results should be optional

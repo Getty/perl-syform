@@ -8,4 +8,14 @@ has bootstrap => (
   predicate => 1,
 );
 
+has bootstrap_submit => (
+  is => 'ro',
+  predicate => 1,
+);
+
+has bootstrap_submit_attributes => (
+  is => 'ro',
+  predicate => 1,
+);
+
 1;

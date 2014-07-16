@@ -14,8 +14,8 @@ has values => (
   required => 1,
   handles => [qw(
     syform
-    field
-    field_names
+    field field_names
+    has_name name
   )],
 );
 

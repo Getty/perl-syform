@@ -3,22 +3,43 @@ package SyForm::ViewFieldRole::HTML;
 
 use Moo::Role;
 
-has html_name => (
+has input_attributes => (
   is => 'lazy',
 );
 
-sub _build_html_name {
+sub _build_input_attributes {
   my ( $self ) = @_;
-  return $self->field->name;
+  my $name = $self->field->name;
+  return {
+    name => $name,
+    id => $name,
+    $self->field->required ? (
+      required => "required",
+    ) : (),
+    $self->field->has_placeholder ? (
+      placeholder => $self->field->placeholder
+    ) : (),
+    $self->field->disabled ? (
+      disabled => "disabled"
+    ) : (),
+    $self->field->has_input_attributes ? (
+      %{$self->field->input_attributes}
+    ) : (),
+  };
 }
 
-has html_id => (
+has label_attributes => (
   is => 'lazy',
 );
 
-sub _build_html_id {
+sub _build_label_attributes {
   my ( $self ) = @_;
-  return $self->html_name;
+  return {
+    for => $self->field->name,
+    $self->field->has_label_attributes ? (
+      %{$self->field->label_attributes}
+    ) : (),
+  };
 }
 
 1;

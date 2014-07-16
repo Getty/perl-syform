@@ -1,7 +1,7 @@
-package SyForm::Field;
+package SyForm::FieldRole;
 # ABSTRACT: Role for fields in SyForm
 
-use Moo;
+use Moo::Role;
 
 with qw(
   MooX::Traits

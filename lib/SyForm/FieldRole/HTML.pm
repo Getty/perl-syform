@@ -3,12 +3,23 @@ package SyForm::FieldRole::HTML;
 
 use Moo::Role;
 
-has input => (
+has disabled => (
+  is => 'lazy',
+);
+
+sub _build_disabled { return 0; }
+
+has placeholder => (
+  is => 'lazy',
+  predicate => 1,
+);
+
+has label_attributes => (
   is => 'ro',
   predicate => 1,
 );
 
-has html_label => (
+has input_attributes => (
   is => 'ro',
   predicate => 1,
 );
