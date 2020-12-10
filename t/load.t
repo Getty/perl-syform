@@ -18,7 +18,7 @@ for (qw(
   SyForm::Exception::UnknownErrorOnProcess
   SyForm::Exception::UnknownErrorOnResultsBuildView
   SyForm::Exception::UnknownErrorOnValuesBuildResults
-  SyForm::Field
+  SyForm::FieldRole
   SyForm::FieldRole::Bootstrap
   SyForm::FieldRole::Default
   SyForm::FieldRole::HTML

@@ -142,27 +142,21 @@ sub throw {
 
 =head1 DESCRIPTION
 
-B<SyForm> is developed for L<SyContent|https://sycontent.de/>.
-
-B<WARNING:> So far the development of B<SyForm> is concentrating on delivering
-the featureset B<SyContent> requires. I don't advice using it without staying
-in contact with me (B<Getty>) at B<#sycontent> on B<irc.perl.org>. While the
-core API will stay stable, the way how to extend the system will change with
-the time.
+B<Development currently on hold>
 
 =head1 SUPPORT
 
 IRC
 
-  Join #sycontent on irc.perl.org. Highlight Getty for fast reaction :).
+  Join #catalyst on irc.perl.org. Highlight Getty for fast reaction :).
 
 Repository
 
-  http://github.com/SyContent/SyForm
+  http://github.com/Getty/perl-syform
   Pull request and additional contributors are welcome
  
 Issue Tracker
 
-  http://github.com/SyContent/SyForm/issues
+  http://github.com/Getty/perl-syform/issues
 
 
